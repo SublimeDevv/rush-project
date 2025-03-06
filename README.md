@@ -9,7 +9,7 @@ Los genios detrás de este proyecto:
 - **[Nombre del Programador 2]** - 🎨 Desarrollador UX/UI
 - **[Nombre del Programador 3]** - 🔧 Desarrollador frontend
 - **[JUAN DIEGO MENDOZA GUTIERREZ - 22393123]** - 🚀 Desarrollador backend
-- **[Nombre del Programador 4]** - 🚀 Analista QA 
+- **Fernando Alberto Villafaña Alfonseca - DEADMOUS3 - ffernando.villafanalfonseca@gmail.com** - 🚀 Analista QA 
 
 ## 📜 Descripción
 
