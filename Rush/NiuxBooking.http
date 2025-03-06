@@ -1,0 +1,6 @@
+@Rush_HostAddress = http://localhost:5274
+
+GET {{Rush_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

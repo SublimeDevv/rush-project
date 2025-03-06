@@ -1,0 +1,9 @@
+﻿namespace Rush.Domain.DTO.Ejemplo
+{
+    public class EjemploTablaDTO: BaseDTO
+    {
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
+        public int Numero { get; set; }
+    }
+}
