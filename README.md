@@ -5,7 +5,7 @@
 
 Los genios detrás de este proyecto:
 
-- **[Nombre del Programador 1]** - 💡 Project Manager
+- **[Luis Alberto Gomez Broca - 22393177]** - 💡 Project Manager
 - **[Carlos Francisco Valier Sanchez - 22393231]** - 🎨 Desarrollador UX/UI
 - **[Misael De Jesus Rosado Paat - 22393270 - Misarosa24]** - 🔧 Desarrollador frontend
 - **[JUAN DIEGO MENDOZA GUTIERREZ - 22393123]** - 🚀 Desarrollador backend
