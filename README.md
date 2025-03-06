@@ -7,7 +7,7 @@ Los genios detrás de este proyecto:
 
 - **[Nombre del Programador 1]** - 💡 Project Manager
 - **[Carlos Francisco Valier Sanchez - 22393231]** - 🎨 Desarrollador UX/UI
-- **[Nombre del Programador 3]** - 🔧 Desarrollador frontend
+- **[Misael De Jesus Rosado Paat - 22393270 - Misarosa24]** - 🔧 Desarrollador frontend
 - **[JUAN DIEGO MENDOZA GUTIERREZ - 22393123]** - 🚀 Desarrollador backend
 - **[Fernando Alberto Villafaña Alfonseca - DEADMOUS3 - ffernando.villafanalfonseca@gmail.com - 22394162]** - 🚀 Analista QA 
 
