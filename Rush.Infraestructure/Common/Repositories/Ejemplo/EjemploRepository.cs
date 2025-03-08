@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Common.ViewModels.Ejemplo;
 using Rush.Domain.Entities.Ejemplo;
+using Rush.Infraestructure.Common.Repositories.Generic;
 using Rush.Infraestructure.Interfaces.Ejemplo;
-using Rush.Infraestructure.Repositories.Generic;
 
-namespace Rush.Infraestructure.Repositories.Ejemplo
+namespace Rush.Infraestructure.Common.Repositories.Ejemplo
 {
     public class EjemploRepository : BaseRepository<EjemploTabla>, IEjemploRepository
     {

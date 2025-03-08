@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
-namespace Rush.Infraestructure.Repositories.Generic
+namespace Rush.Infraestructure.Common.Repositories.Generic
 {
     public class BaseRepository<T> where T : class
     {

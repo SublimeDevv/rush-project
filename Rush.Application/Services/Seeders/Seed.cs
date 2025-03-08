@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Rush.Domain.Entities;
 using Rush.Infraestructure;
-
+using Rush.Infraestructure.Common;
 using static Rush.Domain.Common.Util.Enums;
 
 

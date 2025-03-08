@@ -6,8 +6,8 @@ using Rush.Infraestructure.Repositories.Generic;
 using Rush.Application.Extensions;
 using Serilog;
 using Rush.Application.Interfaces.Base;
-using Rush.Application.Services.Webhook;
 using System.Text.Json;
+using Rush.Infraestructure.Services.Webhook;
 
 namespace Rush.Application.Services.Base
 {

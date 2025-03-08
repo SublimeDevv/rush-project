@@ -1,9 +1,6 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
-
-namespace Rush.Application.Services.Webhook
+namespace Rush.Infraestructure.Services.Webhook
 {
     public class DiscordWebhookService
     {

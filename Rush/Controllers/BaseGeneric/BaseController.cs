@@ -49,7 +49,7 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// <returns></returns>
 
         [HttpGet("{id}")]
-        public virtual async Task<ActionResult<T>> GetById(int id)
+        public virtual async Task<ActionResult<T>> GetById(Guid id)
         {
             var result = await _service.GetById(x => x.Id == id);
             if (result.Data == null)
@@ -85,9 +85,9 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// <returns></returns>
         [Authorize]
         [HttpPut("{id}")]
-        public virtual async Task<ActionResult<TDto>> Update(int id, TDto dto)
+        public virtual async Task<ActionResult<TDto>> Update(Guid id, TDto dto)
         {
-            if (id == 0)
+            if (id == Guid.Empty)
             {
                 return BadRequest();
             }

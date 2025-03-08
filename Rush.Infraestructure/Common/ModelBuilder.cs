@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 
-
-namespace Rush.Infraestructure
+namespace Rush.Infraestructure.Common
 {
     public static class ModelBuilderExtensions
     {

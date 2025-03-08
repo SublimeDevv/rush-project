@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Auth;
 using Rush.Domain.Entities;
 using Rush.Infraestructure.Interfaces.Auth;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using User = Rush.Domain.Entities.User;
 
-namespace Rush.Infraestructure.Repositories.Auth
+namespace Rush.Infraestructure.Common.Repositories.Auth
 {
     public class AuthRepository(
 
-        UserManager<ApplicationUser> userManager,
+        UserManager<User> userManager,
         RoleManager<IdentityRole> roleManager,
         IConfiguration config)
         : IAuthRepository
@@ -24,7 +25,7 @@ namespace Rush.Infraestructure.Repositories.Auth
             if (userDTO is null)
                 return new ResponseHelper() { Success = false, Message = "sin datos" };
 
-            var newUser = new ApplicationUser()
+            var newUser = new User()
             {
                 Email = userDTO.Email,
                 PasswordHash = userDTO.Password,

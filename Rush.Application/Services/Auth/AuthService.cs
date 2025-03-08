@@ -5,6 +5,7 @@ using Rush.Domain.DTO.Auth;
 using Rush.Domain.Entities;
 using Rush.Infraestructure.Interfaces.Auth;
 using Rush.Infraestructure;
+using Rush.Infraestructure.Common;
 
 namespace Rush.Application.Services.Auth
 {
