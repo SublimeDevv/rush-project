@@ -7,7 +7,7 @@ namespace Rush.Domain.Entities
     {
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
     }
