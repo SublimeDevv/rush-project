@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Entities;
-using Rush.Infraestructure;
+using Rush.Domain.Entities.Activities;
+using Rush.Domain.Entities.Employees;
+using Rush.Domain.Entities.ProjectResources;
+using Rush.Domain.Entities.Projects;
+using Rush.Domain.Entities.Resources;
 using Rush.Infraestructure.Common;
 using static Rush.Domain.Common.Util.Enums;
 
@@ -20,105 +25,188 @@ namespace Rush.Application.Services.Seeders
             _roleManager = roleManager;
         }
 
+
         public async Task<List<string>> SeedDataAsync()
         {
             var messages = new List<string>();
 
             await CreateRolesAsync(messages);
 
+            // 1. Crear 20 usuarios
             if (!_context.Users.Any())
             {
-                var users = new[]
+                var users = new List<ApplicationUser>();
+                for (int i = 1; i <= 20; i++)
                 {
-                    new ApplicationUser { UserName = "root@admin.com", Email = "root@admin.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "supervisor@gmail.com", Email = "supervisor@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "gerente@test.com", Email = "gerente@test.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "rh@gmail.com", Email = "rh@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "sistemas@gmail.com", Email = "sistemas@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "carlos@gmail.com", Email = "carlos@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "luis@gmail.com", Email = "luis@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "merida@gmail.com", Email = "merida@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "jaime@gmail.com", Email = "jaime@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "alison@gmail.com", Email = "alison@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "cochi@gmail.com", Email = "cochi@gmail.com" , IsDeleted = false },
-                    new ApplicationUser { UserName = "david@gmail.com", Email = "davida@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "erika@gmail.com", Email = "erika@gmail.com", IsDeleted = false },
-                    new ApplicationUser { UserName = "ocelot@gmail.com", Email = "ocelot@gmail.com", IsDeleted = false }
-                };
+                    users.Add(new ApplicationUser
+                    {
+                        UserName = $"user{i}@test.com",
+                        Email = $"user{i}@test.com",
+                        IsDeleted = false
+                    });
+                }
+
+                // Agregar usuarios especiales
+                users.AddRange(new[]
+                {
+            new ApplicationUser { UserName = "root@admin.com", Email = "root@admin.com", IsDeleted = false },
+            new ApplicationUser { UserName = "supervisor@gmail.com", Email = "supervisor@gmail.com", IsDeleted = false },
+            new ApplicationUser { UserName = "gerente@test.com", Email = "gerente@test.com", IsDeleted = false }
+        });
 
                 foreach (var user in users)
                 {
                     var result = await _userManager.CreateAsync(user, "Niux123?");
                     if (result.Succeeded)
                     {
-                        messages.Add($"Usuario {user.UserName} creado exitosamente.");
-
-                        if (user.UserName == "root@admin.com")
-                            await _userManager.AddToRoleAsync(user, "Admin");
-                        else if (user.UserName == "supervisor@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Supervisor");
-                        else if (user.UserName == "gerente@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Gerente");
-                        else if (user.UserName == "rh@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Recursos Humanos");
-                        else if (user.UserName == "sistemas@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Sistemas");
-                        else if (user.UserName == "luis@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "carlos@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "merida@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "jaime@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "alison@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "efrain@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "david@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "erika@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-                        else if (user.UserName == "karen@gmail.com")
-                            await _userManager.AddToRoleAsync(user, "Empleado");
-
-
-                    }
-                    else
-                    {
-                        messages.Add($"Error al crear el usuario {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                        var role = user.UserName switch
+                        {
+                            "root@admin.com" => "Admin",
+                            "supervisor@gmail.com" => "Supervisor",
+                            "gerente@test.com" => "Gerente",
+                            _ => "Empleado"
+                        };
+                        await _userManager.AddToRoleAsync(user, role);
+                        messages.Add($"Usuario {user.UserName} creado con rol {role}");
                     }
                 }
             }
 
+            // 2. Crear 20 proyectos
+            if (!_context.Projects.Any())
+            {
+                var projects = new List<Project>();
+                for (int i = 1; i <= 20; i++)
+                {
+                    projects.Add(new Project
+                    {
+                        Name = $"Proyecto {i}",
+                        Description = $"Descripción del proyecto {i}",
+                        StartDate = DateTime.Now.AddDays(-i * 10),
+                        EndTime = DateTime.Now.AddDays(i * 20),
+                        Status = (StatusProject)(i % Enum.GetNames(typeof(StatusProject)).Length)
+                    });
+                }
+                _context.Projects.AddRange(projects);
+                await _context.SaveChangesAsync();
+                messages.Add("20 proyectos creados");
+            }
 
-            //if (!_context.Categorias.Any())
-            //{
-            //    var categorias = new[]
-            //    {
-            //        new Categoria { Nombre = "Desarrollo Web" },
-            //        new Categoria { Nombre = "SEO" },
-            //        new Categoria { Nombre = "Marketing Digital" },
-            //        new Categoria { Nombre = "Diseño Gráfico" },
-            //        new Categoria { Nombre = "Desarrollo de Apps" },
-            //        new Categoria { Nombre = "Consultoría" },
-            //        new Categoria { Nombre = "Redes Sociales" },
-            //        new Categoria { Nombre = "Publicidad" },
-            //        new Categoria { Nombre = "E-commerce" },
-            //        new Categoria { Nombre = "Branding" },
-            //        new Categoria { Nombre = "Diseño Web" }
+            // 3. Crear 20 empleados con proyectos asignados
+            if (!_context.Employees.Any())
+            {
+                var projects = await _context.Projects.ToListAsync();
+                var users = await _userManager.Users.ToListAsync();
 
-            //    };
+                var employees = new List<Employee>();
+                for (int i = 0; i < 20; i++)
+                {
+                    employees.Add(new Employee
+                    {
+                        Name = $"Empleado {i + 1}",
+                        LastName = $"Apellido {i + 1}",
+                        Age = 25 + i,
+                        Curp = $"CURP{i + 1}".PadRight(18, 'X'),
+                        Rfc = $"RFC{i + 1}".PadRight(13, 'X'),
+                        Salary = $"{15000 + (i * 1000)}.00",
+                        UserId = users[i].Id,
+                        ProjectId = projects[i % projects.Count].Id
+                    });
+                }
+                _context.Employees.AddRange(employees);
+                await _context.SaveChangesAsync();
+                messages.Add("20 empleados creados con proyectos asignados");
+            }
 
-            //    _context.Categorias.AddRange(categorias);
-            //    _context.SaveChanges();
-            //}
+            // 4. Crear 20 recursos
+            if (!_context.Resources.Any())
+            {
+                var resources = new List<Resource>();
+                for (int i = 1; i <= 20; i++)
+                {
+                    resources.Add(new Resource
+                    {
+                        Name = $"Recurso {i}",
+                        Description = $"Descripción del recurso {i}",
+                        Quantity = i * 5
+                    });
+                }
+                _context.Resources.AddRange(resources);
+                await _context.SaveChangesAsync();
+                messages.Add("20 recursos creados");
+            }
 
-           
+            // 5. Crear 20 project resources
+            if (!_context.ProjectResources.Any())
+            {
+                var projects = await _context.Projects.ToListAsync();
+                var resources = await _context.Resources.ToListAsync();
 
-                return messages;
+                var projectResources = new List<ProjectResource>();
+                for (int i = 0; i < 20; i++)
+                {
+                    projectResources.Add(new ProjectResource
+                    {
+                        ProjectId = projects[i].Id,
+                        ResourceId = resources[i].Id,
+                        Quantity = 10 + i,
+                        UsedQuantity = 3 + i
+                    });
+                }
+                _context.ProjectResources.AddRange(projectResources);
+                await _context.SaveChangesAsync();
+                messages.Add("20 project resources creados");
+            }
+
+            // 6. Crear 20 tareas
+            if (!_context.Tasks.Any())
+            {
+                var projects = await _context.Projects.ToListAsync();
+                var tasks = new List<Domain.Entities.Tasks.Task>();
+
+                for (int i = 0; i < 20; i++)
+                {
+                    tasks.Add(new Domain.Entities.Tasks.Task
+                    {
+                        ProjectId = projects[i].Id,
+                        Name = $"Tarea {i + 1}",
+                        Description = $"Descripción de la tarea {i + 1}",
+                        EstimatedHours = 40 + (i * 2),
+                        WorkedHours = 20 + i,
+                        StartDate = DateTime.Now.AddDays(-i * 2),
+                        EndTime = DateTime.Now.AddDays(i * 3)
+                    });
+                }
+                _context.Tasks.AddRange(tasks);
+                await _context.SaveChangesAsync();
+                messages.Add("20 tareas creadas");
+            }
+
+            // 7. Crear 20 actividades
+            if (!_context.Activities.Any())
+            {
+                var tasks = await _context.Tasks.ToListAsync();
+                var employees = await _context.Employees.ToListAsync();
+
+                var activities = new List<Activity>();
+                for (int i = 0; i < 20; i++)
+                {
+                    activities.Add(new Activity
+                    {
+                        TaskId = tasks[i].Id,
+                        EmployeeId = employees[i].Id,
+                        Name = $"Actividad {i + 1}",
+                        Description = $"Descripción de la actividad {i + 1}",
+                        Status = StatusActivity.BEGIN
+                    });
+                }
+                _context.Activities.AddRange(activities);
+                await _context.SaveChangesAsync();
+                messages.Add("20 actividades creadas");
+            }
+
+            return messages;
         }
-
 
         private async Task CreateRolesAsync(List<string> messages)
         {

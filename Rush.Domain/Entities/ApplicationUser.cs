@@ -6,8 +6,5 @@ namespace Rush.Domain.Entities
     {
         public bool IsDeleted { get; set; }
         public string? AvatarURL { get; set; }
-
-        public Guid? ProjectId { get; set; }
-
     }
 }

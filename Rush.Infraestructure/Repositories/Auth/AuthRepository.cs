@@ -6,14 +6,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Auth;
+using Rush.Domain.Entities;
 using Rush.Infraestructure.Interfaces.Auth;
-using User = Rush.Domain.Entities.Users.User;
 
 namespace Rush.Infraestructure.Repositories.Auth
 {
     public class AuthRepository(
 
-        UserManager<User> userManager,
+        UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IConfiguration config)
         : IAuthRepository
@@ -24,7 +24,7 @@ namespace Rush.Infraestructure.Repositories.Auth
             if (userDTO is null)
                 return new ResponseHelper() { Success = false, Message = "sin datos" };
 
-            var newUser = new User()
+            var newUser = new ApplicationUser()
             {
                 Email = userDTO.Email,
                 PasswordHash = userDTO.Password,

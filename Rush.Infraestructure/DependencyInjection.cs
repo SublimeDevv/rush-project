@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Rush.Domain.Entities.Users;
+using Rush.Domain.Entities;
 using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.Activities;
 using Rush.Infraestructure.Interfaces.Auth;
@@ -54,7 +54,7 @@ public static class DependencyInjection
             };
         });
 
-        services.AddIdentity<User, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddRoles<IdentityRole>();

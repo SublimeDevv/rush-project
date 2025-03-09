@@ -6,19 +6,18 @@ using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.ProjectResources;
 using Rush.Domain.Entities.Projects;
 using Rush.Domain.Entities.Resources;
-using Rush.Domain.Entities.Users;
 using Task = Rush.Domain.Entities.Tasks.Task;
 
 namespace Rush.Infraestructure.Common
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
 
-        public DbSet<User> AppUsers { get; set; }        
+        public DbSet<ApplicationUser> AppUsers { get; set; }        
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Activity> Activities { get; set; }
