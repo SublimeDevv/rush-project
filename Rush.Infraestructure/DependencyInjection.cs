@@ -1,17 +1,26 @@
 using System.Text;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Rush.Domain.Entities;
+using Rush.Domain.Entities.Users;
 using Rush.Infraestructure.Common;
-using Rush.Infraestructure.Common.Repositories.Auth;
-using Rush.Infraestructure.Common.Repositories.Ejemplo;
+using Rush.Infraestructure.Interfaces.Activities;
 using Rush.Infraestructure.Interfaces.Auth;
-using Rush.Infraestructure.Interfaces.Ejemplo;
+using Rush.Infraestructure.Interfaces.Employees;
+using Rush.Infraestructure.Interfaces.ProjectResources;
+using Rush.Infraestructure.Interfaces.Projects;
+using Rush.Infraestructure.Interfaces.Resources;
+using Rush.Infraestructure.Interfaces.Tasks;
+using Rush.Infraestructure.Repositories.Activities;
+using Rush.Infraestructure.Repositories.Auth;
+using Rush.Infraestructure.Repositories.Employees;
+using Rush.Infraestructure.Repositories.ProjectResources;
+using Rush.Infraestructure.Repositories.Projects;
+using Rush.Infraestructure.Repositories.Resources;
+using Rush.Infraestructure.Repositories.Tasks;
 using Rush.Infraestructure.Services.Webhook;
 
 namespace Rush.Infraestructure;
@@ -55,7 +64,6 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         
         services.AddScoped<IAuthRepository, AuthRepository>();
-        services.AddScoped<IEjemploRepository, EjemploRepository>();
         
         AddServices(services);
         AddRepository(services);
@@ -79,6 +87,11 @@ public static class DependencyInjection
     private static void AddRepository(IServiceCollection services)
     {
         services.AddScoped<IAuthRepository, AuthRepository>();
-        services.AddScoped<IEjemploRepository, EjemploRepository>();
+        services.AddScoped<IActivityRepository, ActivityRepository>();
+        services.AddScoped<ITaskRepository, TaskRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IResourceRepository, ResourceRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
     }
 }

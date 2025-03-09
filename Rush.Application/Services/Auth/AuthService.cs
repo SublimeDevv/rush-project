@@ -4,7 +4,6 @@ using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Auth;
 using Rush.Domain.Entities;
 using Rush.Infraestructure.Interfaces.Auth;
-using Rush.Infraestructure;
 using Rush.Infraestructure.Common;
 
 namespace Rush.Application.Services.Auth
@@ -59,12 +58,6 @@ namespace Rush.Application.Services.Auth
                 response.Message = e.Message;
             }
             return response;
-        }
-
-        private string GenerateSlug(string title)
-        {
-            var slug = title.ToLower().Replace(" ", "-");
-            return slug;
         }
     }
 }

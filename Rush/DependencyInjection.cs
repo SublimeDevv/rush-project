@@ -1,19 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Rush.Infraestructure;
 using Rush.Application.Mappings;
-using Rush.Application.Interfaces.Auth;
-using Rush.Application.Services.Auth;
-using Rush.Infraestructure.Interfaces.Auth;
-using Rush.Application.Services.Seeders;
-using Rush.Infraestructure.Interfaces.Ejemplo;
-using Rush.Application.Interfaces.Ejemplo;
-using Rush.Application.Services.Ejemplo;
-using Rush.Infraestructure.Common;
-using Rush.Infraestructure.Common.Repositories.Auth;
-using Rush.Infraestructure.Common.Repositories.Ejemplo;
-using Rush.Infraestructure.Services.Webhook;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Rush.WebAPI

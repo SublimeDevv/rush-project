@@ -1,16 +1,8 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Rush.Domain.Entities;
 using Rush.Infraestructure;
 using Rush.WebAPI;
 using Serilog;
-using Swashbuckle.AspNetCore.Filters;
-using System.Text;
 using Rush.Application;
-using Rush.Infraestructure.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

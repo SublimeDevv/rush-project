@@ -1,8 +1,13 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Entities;
-using Rush.Domain.Entities.Ejemplo;
+using Rush.Domain.Entities.Activities;
+using Rush.Domain.Entities.Employees;
+using Rush.Domain.Entities.ProjectResources;
+using Rush.Domain.Entities.Projects;
+using Rush.Domain.Entities.Resources;
+using Rush.Domain.Entities.Users;
+using Task = Rush.Domain.Entities.Tasks.Task;
 
 namespace Rush.Infraestructure.Common
 {
@@ -15,14 +20,11 @@ namespace Rush.Infraestructure.Common
 
         public DbSet<User> AppUsers { get; set; }        
         public DbSet<Project> Projects { get; set; }
-        
-        public DbSet<EmployeesTasks> EmployeesTasks { get; set; }
-        public DbSet<Tasks> Tasks { get; set; }
-        public DbSet<Activities> Activities { get; set; }
-        
-        public DbSet<ProjectResources> ProjectResources { get; set; }
-        public DbSet<Resources> Resources { get; set; }
-        public DbSet<Employees> Employees { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<ProjectResource> ProjectResources { get; set; }
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
