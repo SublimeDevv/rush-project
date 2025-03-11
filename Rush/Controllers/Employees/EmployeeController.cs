@@ -16,6 +16,17 @@ namespace Rush.WebAPI.Controllers.Employees
         {
             _service = service;
         }
+ 
+
+        [HttpPost("AssignProject")]
+        public async Task<IActionResult> AssignProject([FromQuery] EmployeeDTOForProject employeeDto)
+        {
+            await _service.AssignProject(employeeDto.EmployeeId, employeeDto.ProjectId, employeeDto.Role);
+            
+            return Ok("Si sirve");
+        }
+        
+
     }
     
     

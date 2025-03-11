@@ -10,6 +10,15 @@
         public string Salary { get; set; }
         public string UserId { get; set; }
         public Guid? ProjectId { get; set; }
-
+        
+        
     }
+    
+    public class EmployeeDTOForProject
+    {
+    public Guid EmployeeId { get; set; }
+    public Guid ProjectId { get; set; }
+    public string? Role { get; set; }
+    }
+
 }

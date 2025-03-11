@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using ExpressionExtensionSQL;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Entities;
 using Rush.Domain.Entities.Activities;
@@ -25,7 +27,6 @@ namespace Rush.Infraestructure.Common
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Employee> Employees { get; set; }
         
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
@@ -34,5 +35,8 @@ namespace Rush.Infraestructure.Common
             var entitiesAssembly = typeof(BaseEntity).Assembly;
             modelBuilder.RegisterAllEntities<BaseEntity>(entitiesAssembly);
         }
+        
+
+        
     }
 }
