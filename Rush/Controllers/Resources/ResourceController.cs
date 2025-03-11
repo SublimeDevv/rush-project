@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Resources;
 using Rush.Domain.DTO.Resources;
 using Rush.Domain.Entities.Resources;
@@ -16,5 +17,23 @@ namespace Rush.WebAPI.Controllers.Resources
         {
             _service = service;
         }
+
+        //[Authorize]
+        [HttpGet("GetResourceWithProjects")]
+        public async Task<IActionResult> GetResourceWithProjects(Guid Id)
+        { 
+            var result = await _service.GetResourceWithProjects(Id);
+            return Ok(result);
+        }
+
+        //[Authorize]
+        [HttpGet("GetResourcesByproject")]
+        public async Task<IActionResult> GetResourcesByproject(Guid Id)
+        {
+            var result = await _service.GetResourcesByproject(Id);
+            return Ok(result);
+        }
+
+
     }
 }

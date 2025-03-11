@@ -65,7 +65,7 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// </summary>
         /// <param name="dto">The dto.</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public virtual async Task<ActionResult<TDto>> Create(TDto dto)
         {
@@ -83,7 +83,7 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// <param name="id">The identifier.</param>
         /// <param name="dto">The dto.</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
         public virtual async Task<ActionResult<TDto>> Update(Guid id, TDto dto)
         {
@@ -109,7 +109,7 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> Delete(int id)
         {
