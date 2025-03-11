@@ -15,7 +15,7 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        Task<int> InsertAsync(T entity);
+        Task<Guid> InsertAsync(T entity);
         /// <summary>
         /// Updates the asynchronous.
         /// </summary>
@@ -33,7 +33,7 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// </summary>
         /// <param name="Id">The identifier.</param>
         /// <returns></returns>
-        Task<int> RemoveAsync(int Id);
+        Task<int> RemoveAsync(Guid Id);
         /// <summary>
         /// Gets all asynchronous.
         /// </summary>

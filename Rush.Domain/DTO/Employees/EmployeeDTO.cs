@@ -1,4 +1,6 @@
-﻿namespace Rush.Domain.DTO.Employees
+﻿using static Rush.Domain.Common.Util.Enums;
+
+namespace Rush.Domain.DTO.Employees
 {
     public class EmployeeDTO: BaseDTO
     {
@@ -9,6 +11,7 @@
         public string Rfc { get; set; }
         public string Salary { get; set; }
         public string UserId { get; set; }
+        public Sexo Sexo { get; set; }
         public Guid? ProjectId { get; set; }
         
         

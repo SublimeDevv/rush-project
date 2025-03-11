@@ -25,7 +25,7 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public virtual async Task<int> InsertAsync(T entity)
+        public virtual async Task<Guid> InsertAsync(T entity)
         {
             var createdAtProperty = typeof(T).GetProperty("CreatedAt");
             if (createdAtProperty != null && createdAtProperty.PropertyType == typeof(DateTime))
@@ -36,7 +36,7 @@ namespace Rush.Infraestructure.Repositories.Generic
             Context.Set<T>().Add(entity);
             await Context.SaveChangesAsync();
 
-            return (int)typeof(T).GetProperty("Id")?.GetValue(entity);
+            return (Guid)typeof(T).GetProperty("Id")?.GetValue(entity);
         }
 
 
@@ -75,7 +75,7 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual async Task<int> RemoveAsync(int id)
+        public virtual async Task<int> RemoveAsync(Guid id)
         {
             var entity = await Context.Set<T>().FindAsync(id);
             if (entity != null)
