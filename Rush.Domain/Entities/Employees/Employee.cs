@@ -1,5 +1,6 @@
 using Rush.Domain.Entities.Activities;
 using Rush.Domain.Entities.Projects;
+using static Rush.Domain.Common.Util.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Rush.Domain.Entities.Employees
@@ -10,10 +11,9 @@ namespace Rush.Domain.Entities.Employees
         public string Name { get; set; }
         public string LastName { get; set; }
         public int Age { get; set; }
-
+        public Sexo Sexo { get; set; }
         public string Curp { get; set; }
         public string Rfc { get; set; }
-
         public string Salary { get; set; }
         [ForeignKey("UserId")]
         public string UserId { get; set; } = null!;

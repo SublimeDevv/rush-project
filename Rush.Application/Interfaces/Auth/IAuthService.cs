@@ -7,6 +7,7 @@ namespace Rush.Application.Interfaces.Auth
     {
         Task<ResponseHelper> CreateAccount(UserDTO userDTO);
         Task<ResponseHelperAuth> LoginAccount(LoginDTO loginDTO);
-    
+        Task<ResponseHelper> RegisterEmployee(RegisterEmployeeDTO employee);
+
     }
 }

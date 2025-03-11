@@ -11,7 +11,7 @@ namespace Rush.Application.Interfaces.Base
         Task<ResponseHelper> UpdateAsync(T entity);
         Task<ResponseHelper> GetById(Expression<Func<T, bool>>? filter = null);
         Task<ResponseHelper> RemoveAsync(T entity);
-        Task<ResponseHelper> RemoveAsync(int Id);
+        Task<ResponseHelper> RemoveAsync(Guid Id);
         Task<TDto> ConvertToDto(T entity);
         Task<T> ConvertToEntity(TDto dto);
         Task<List<TDto>> ConvertToDto(List<T> entity);
