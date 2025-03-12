@@ -18,7 +18,6 @@ namespace Rush.WebAPI.Controllers.Resources
             _service = service;
         }
 
-        //[Authorize]
         [HttpGet("GetResourceWithProjects")]
         public async Task<IActionResult> GetResourceWithProjects(Guid Id)
         { 
@@ -26,7 +25,6 @@ namespace Rush.WebAPI.Controllers.Resources
             return Ok(result);
         }
 
-        //[Authorize]
         [HttpGet("GetResourcesByproject")]
         public async Task<IActionResult> GetResourcesByproject(Guid Id)
         {
@@ -34,6 +32,13 @@ namespace Rush.WebAPI.Controllers.Resources
             return Ok(result);
         }
 
+
+        [HttpGet("GetDashboardDataResources")]
+        public async Task<IActionResult> GetDashboardDataResources()
+        {
+            var result = await _service.GetDashboardDataResources();
+            return Ok(result);
+        }
 
     }
 }

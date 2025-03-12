@@ -101,5 +101,32 @@ namespace Rush.Application.Services.Resources
 
             return response;
         }
+
+        public async Task<ResponseHelper> GetDashboardDataResources()
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                ResourceDataDashboardVM resourcesDataDashboard = await _repository.GetDashboardDataResources();
+
+                if (resourcesDataDashboard == null)
+                {
+                    response.Message = "No se encontraron los datos";
+                    response.Success = false;
+                }
+
+                response.Data = resourcesDataDashboard;
+                response.Message = "Datos obtenidos con éxito";
+                response.Success = true;
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
     }
 }

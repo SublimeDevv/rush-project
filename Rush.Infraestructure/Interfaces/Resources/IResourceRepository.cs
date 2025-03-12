@@ -8,5 +8,6 @@ namespace Rush.Infraestructure.Interfaces.Resources
     {
         Task<List<ResourceWithProjectVM>> GetResourceWithProjects(Guid Id);
         Task<List<ResourceVM>> GetResourcesByproject(Guid Id);
+        Task<ResourceDataDashboardVM> GetDashboardDataResources();
     }
 }
