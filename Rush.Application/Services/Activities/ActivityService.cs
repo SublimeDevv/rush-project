@@ -17,5 +17,6 @@ namespace Rush.Application.Services.Activities
             _mapper = mapper;
             _repository = repository;
         }
+        
     }
 }

@@ -8,5 +8,6 @@ namespace Rush.Application.Interfaces.Activities
 {
     public interface IActivityService: IServiceBase<Activity, ActivityDTO>
     {
+        
     }
 }

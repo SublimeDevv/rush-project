@@ -2,7 +2,7 @@
 
 namespace Rush.Domain.DTO.Project
 {
-    public class ProjectDTO: BaseDTO
+    public class ProjectDTO : BaseDTO
     {
         public required string Name { get; set; }
 
@@ -15,4 +15,21 @@ namespace Rush.Domain.DTO.Project
         public StatusProject Status { get; set; } = StatusProject.ON_HOLD;
 
     }
+
+    public class CreateProjectDTO
+    {
+        public required string Name { get; set; }
+
+        public string Description { get; set; } = null!;
+
+        public DateTime StartDate { get; set; } = DateTime.Now;
+
+        public StatusProject Status { get; set; } = StatusProject.ON_HOLD;
+        
+        public Guid EmployeeId { get; set; }
+        
+
+    }
+
+
 }

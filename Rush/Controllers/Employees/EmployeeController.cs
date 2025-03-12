@@ -16,6 +16,23 @@ namespace Rush.WebAPI.Controllers.Employees
         {
             _service = service;
         }
+
+        [HttpPost("AssignProject")]
+        public async Task<IActionResult> AssignProject([FromQuery] EmployeeDTOForProject employeeDto)
+        {
+            await _service.AssignProject(employeeDto.EmployeeId, employeeDto.ProjectId, employeeDto.Role);
+            
+            return Ok("Si sirve");
+        }
+
+        [HttpPost("RemoveProject")]
+        public async Task<IActionResult> RemoveProject([FromQuery] EmployeeDTOForProject employeeDto)
+        {
+            await _service.RemoveProject(employeeDto.EmployeeId, employeeDto.Role);
+
+            return Ok("Proyecto retirado");
+        }
+        
     }
     
     
