@@ -6,5 +6,6 @@ namespace Rush.Application.Interfaces.Projects
 {
     public interface IProjectService: IServiceBase<Project, ProjectDTO>
     {
+        public Task Create(CreateProjectDTO createProjectDto);
     }
 }

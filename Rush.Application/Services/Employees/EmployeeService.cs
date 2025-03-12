@@ -9,7 +9,7 @@ using Rush.Infraestructure.Interfaces.Employees;
 
 namespace Rush.Application.Services.Employees
 {
-    public class EmployeeService : ServiceBase<Employee, EmployeeDTO>, IEmployeeService
+    public class EmployeeService : ServiceBase<Employee, EmployeeDTO>, IEmployeeService, IEmployeeManagementService
     {
         private readonly IEmployeeRepository _repository;
         private readonly IMapper _mapper;
@@ -22,10 +22,26 @@ namespace Rush.Application.Services.Employees
             _repository = repository;
         }
 
-        public async Task AssignProject(Guid employeeId, Guid projectId, string role)
+        public async Task RemoveProject(Guid employeeId, string? role)
         {
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
-            var employeeWithRelations = await _repository.GetSingleWithRelationsAsync(s => s.Id == employeeId);
+
+            if (employee is not null)
+            {
+                employee.ProjectId = null;
+            
+                await ManageRoleAssignment(employeeId, role);
+            
+                await _repository.UpdateAsync(employee);
+            }
+                
+        }
+        
+        
+        public async Task AssignProject(Guid employeeId, Guid projectId, string? role)
+        {
+            //these i have two queries the firstone is for the model and the second one is to get the userId
+            var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
             
             if (employee == null)
                 throw new Exception($"Employee with ID {employeeId} not found");
@@ -35,23 +51,40 @@ namespace Rush.Application.Services.Employees
                 employee.ProjectId = projectId;
             }
             
-            var user = (employeeWithRelations.User.Id is not null) ? await _userManager.FindByIdAsync(employeeWithRelations.User.Id) : null;
+            await ManageRoleAssignment(employeeId, role);
+            
+            await _repository.UpdateAsync(employee);
+
+        }
+        public async Task<bool> ManageRoleAssignment(Guid employeeId, string? role = "Empleado")
+        {
+            if(employeeId == Guid.Empty)
+                return false;
+
+            var user = await _userManager.FindByIdAsync(employeeId.ToString()); 
             
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+                
+                //Validation for the user not be stupid and change the role of the Admin to a Employee
+                if(roles.Contains("Admin"))
+                {
+                    return true;
+                }
+                
+                //These will erase all the roles the user has, later it will have them again (the roles that it need)
                 foreach (var rol in roles)
                 {
                     await _userManager.RemoveFromRoleAsync(user, rol);
                 }
-                if (!roles.Contains(role))
-                {
-                    await _userManager.AddToRoleAsync(user, role);
-                }
+                //These will add the asked role
+                await _userManager.AddToRoleAsync(user, role);
+                
             }
             
-            await _repository.UpdateAsync(employee);
-
+            return true;
+            
         }
     }
 
