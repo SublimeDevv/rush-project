@@ -73,7 +73,7 @@ namespace Rush.Application.Services.Base
             {
                 var result = await _repository.InsertAsync(entity);
 
-                if (result != 0)
+                if (result != Guid.Empty)
                 {
                     response.Message = $"El elemento {typeof(T).GetDisplayName()} fue insertado con éxito.";
                     response.Success = true;
@@ -161,7 +161,7 @@ namespace Rush.Application.Services.Base
             return response;
         }
 
-        public async Task<ResponseHelper> RemoveAsync(int id)
+        public async Task<ResponseHelper> RemoveAsync(Guid id)
         {
             ResponseHelper response = new ResponseHelper();
             try

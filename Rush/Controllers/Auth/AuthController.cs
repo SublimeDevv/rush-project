@@ -9,9 +9,9 @@ namespace Rush.WebAPI.Controllers.Auth
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserDTO userDTO)
+        public async Task<IActionResult> Register(RegisterEmployeeDTO employee)
         {
-            var response = await authService.CreateAccount(userDTO);
+            var response = await authService.RegisterEmployee(employee);
             return Ok(response);
         }
 

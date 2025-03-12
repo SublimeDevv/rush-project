@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Base;
 using Rush.Domain.DTO;
@@ -65,7 +66,6 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// </summary>
         /// <param name="dto">The dto.</param>
         /// <returns></returns>
-        //[Authorize]
         [HttpPost]
         public virtual async Task<ActionResult<TDto>> Create(TDto dto)
         {
@@ -83,7 +83,6 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// <param name="id">The identifier.</param>
         /// <param name="dto">The dto.</param>
         /// <returns></returns>
-        //[Authorize]
         [HttpPut("{id}")]
         public virtual async Task<ActionResult<TDto>> Update(Guid id, TDto dto)
         {
@@ -109,9 +108,8 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        //[Authorize]
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> Delete(int id)
+        public virtual async Task<IActionResult> Delete(Guid id)
         {
             var result = await _service.RemoveAsync(id);
 
