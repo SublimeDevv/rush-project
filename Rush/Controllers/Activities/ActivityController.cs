@@ -16,5 +16,6 @@ namespace Rush.WebAPI.Controllers.Activities
         {
             _service = service;
         }
+        
     }
 }

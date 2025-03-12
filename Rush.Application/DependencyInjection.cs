@@ -30,7 +30,8 @@ public static class DependencyInjection
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IProjectResourceService, ProjectResourceService>();
         services.AddScoped<IResourceService, ResourceService>();
-
+        services.AddScoped<IEmployeeManagementService, EmployeeService>();
+        
         services.AddScoped<Seed>();
 
 
