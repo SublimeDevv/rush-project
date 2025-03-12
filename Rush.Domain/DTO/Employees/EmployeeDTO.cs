@@ -13,6 +13,15 @@ namespace Rush.Domain.DTO.Employees
         public string UserId { get; set; }
         public Sexo Sexo { get; set; }
         public Guid? ProjectId { get; set; }
-
+        
+        
     }
+    
+    public class EmployeeDTOForProject
+    {
+    public Guid EmployeeId { get; set; }
+    public Guid ProjectId { get; set; }
+    public string? Role { get; set; } = "Empleado";
+    }
+
 }

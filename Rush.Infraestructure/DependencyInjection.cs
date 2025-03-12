@@ -59,7 +59,6 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddRoles<IdentityRole>();
-
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));

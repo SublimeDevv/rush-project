@@ -8,6 +8,17 @@
             MASCULINO,
             FEMENINO,
             OTRO
+            
+        }
+        
+        public enum Roles
+        {
+            Recursos_Humanos,
+            Supervisor,
+            Empleado,
+            Admin,
+            Sistemas,
+            Gerente,
         }
 
         public enum StatusProject

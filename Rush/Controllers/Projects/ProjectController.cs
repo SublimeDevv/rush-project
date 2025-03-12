@@ -16,5 +16,13 @@ namespace Rush.WebAPI.Controllers.Projects
         {
             _service = service;
         }
+        
+        [HttpPost("CreateProject")]
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDTO projectDto)
+        {
+            await _service.Create(projectDto);
+            
+            return Ok("Proyecto creado");
+        }
     }
 }

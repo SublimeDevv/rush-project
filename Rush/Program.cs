@@ -12,7 +12,8 @@ Log.Logger = new LoggerConfiguration()
         rollingInterval: RollingInterval.Day,
         rollOnFileSizeLimit: true)
     .CreateLogger();
-    
+  
+
 builder.Services.AddPresentation(builder.Configuration);
 
 builder.Services.AddInfrastructure(builder.Configuration);
