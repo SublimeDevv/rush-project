@@ -94,5 +94,6 @@ public static class DependencyInjection
         services.AddScoped<IResourceRepository, ResourceRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
     }
 }

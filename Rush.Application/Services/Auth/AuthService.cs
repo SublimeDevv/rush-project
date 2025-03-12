@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Rush.Domain.Entities.Employees;
 using Rush.Infraestructure.Interfaces.Employees;
+using Rush.Domain.Common.ViewModels.Auth;
 
 namespace Rush.Application.Services.Auth
 {
@@ -125,5 +126,26 @@ namespace Rush.Application.Services.Auth
 
             return response;
         }
+
+        public async Task<ResponseHelper> RefreshToken(string request)
+        {
+            ResponseHelper response = new();
+            try
+            {
+                response.Data = await _authRepository.RefreshToken(request);
+                response.Success = true;
+                response.Message = "Token refrescado correctamente.";
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+
+            return response;
+
+        }
+
+
+
     }
 }

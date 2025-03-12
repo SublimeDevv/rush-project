@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Entities;
 using Rush.Domain.Entities.Activities;
+using Rush.Domain.Entities.Auth;
 using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.ProjectResources;
 using Rush.Domain.Entities.Projects;
@@ -24,8 +25,9 @@ namespace Rush.Infraestructure.Common
         public DbSet<ProjectResource> ProjectResources { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        
-        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

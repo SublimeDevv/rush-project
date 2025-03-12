@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Auth;
+using Rush.Domain.Common.ViewModels.Auth;
 using Rush.Domain.DTO.Auth;
 
 namespace Rush.WebAPI.Controllers.Auth
@@ -19,6 +20,13 @@ namespace Rush.WebAPI.Controllers.Auth
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
             var response = await authService.LoginAccount(loginDTO);
+            return Ok(response);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(string request)
+        {
+            var response = await authService.RefreshToken(request);
             return Ok(response);
         }
 
