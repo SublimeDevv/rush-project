@@ -48,7 +48,7 @@ namespace Rush.Infraestructure.Repositories.Auth
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: userClaims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: credentials
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -59,7 +59,7 @@ namespace Rush.Infraestructure.Repositories.Auth
             var newAccessToken = new RefreshToken
             {
                 Active = true,
-                Expiration = DateTime.UtcNow.AddDays(7),
+                Expiration = DateTime.UtcNow.AddMinutes(60 * 24 * 7),
                 RefreshTokenValue = Guid.NewGuid().ToString("N"),
                 Used = false,
                 UserId = user.Id

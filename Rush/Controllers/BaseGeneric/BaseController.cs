@@ -35,6 +35,7 @@ namespace Rush.WebAPI.Controllers.BaseGeneric
         /// <returns></returns>
 
         [HttpGet]
+        [Authorize]
         public virtual async Task<ActionResult<List<TDto>>> GetAll()
         {
             var result = await _service.GetAllAsync();

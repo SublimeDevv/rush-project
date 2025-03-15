@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Rush.Domain.Entities.Employees;
 using Rush.Infraestructure.Interfaces.Employees;
-using Rush.Domain.Common.ViewModels.Auth;
 
 namespace Rush.Application.Services.Auth
 {
@@ -144,8 +143,6 @@ namespace Rush.Application.Services.Auth
             return response;
 
         }
-
-
 
     }
 }

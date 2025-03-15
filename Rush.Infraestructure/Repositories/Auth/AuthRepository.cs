@@ -106,7 +106,7 @@ namespace Rush.Infraestructure.Repositories.Auth
 
             if (refreshToken.Used)
             {
-               Log.Error("El refresh token del {UserId} ya fue usado {RefreshToken}", refreshToken.UserId, refreshToken.RefreshTokenValue);
+               Log.Error("El refresh token del usuario ya fue usado", refreshToken.UserId, refreshToken.RefreshTokenValue);
 
                 var refreshTokens = await _context.RefreshTokens.Where(q => q.Active && q.Used == false && q.UserId == refreshToken.UserId)
                 .ToListAsync();
@@ -121,8 +121,6 @@ namespace Rush.Infraestructure.Repositories.Auth
 
                 throw new ForbiddenAccessException();
             }
-
-            // TODO: Validar que el Access Token sí corresponde al mismo usuario
 
             refreshToken.Used = true;
 

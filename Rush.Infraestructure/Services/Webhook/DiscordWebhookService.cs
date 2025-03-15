@@ -35,7 +35,7 @@ namespace Rush.Infraestructure.Services.Webhook
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"Error al enviar el mensaje a Discord: {response.StatusCode}. Detalle: {errorMessage}");
+                //throw new HttpRequestException($"Error al enviar el mensaje a Discord: {response.StatusCode}. Detalle: {errorMessage}");
             }
         }
     }
