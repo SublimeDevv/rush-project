@@ -1,23 +1,22 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Rush.Domain.Common.ViewModels.Auth;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Auth;
 using Rush.Domain.Entities;
+using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.Auth;
+using Serilog;
 
 namespace Rush.Infraestructure.Repositories.Auth
 {
-    public class AuthRepository(
-
-        UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
-        IConfiguration config)
-        : IAuthRepository
+    class AuthRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+        ITokenRepository tokenRepository, ApplicationDbContext context) : IAuthRepository
     {
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly ITokenRepository _tokenRepository = tokenRepository;
+        private readonly ApplicationDbContext _context = context;
 
         public async Task<ResponseHelper> CreateAccount(UserDTO userDTO)
         {
@@ -31,28 +30,28 @@ namespace Rush.Infraestructure.Repositories.Auth
                 UserName = userDTO.Email
             };
 
-            var user = await userManager.FindByEmailAsync(newUser.Email);
+            var user = await _userManager.FindByEmailAsync(newUser.Email);
             if (user is not null)
                 return new ResponseHelper() { Success = false, Message = "Usuario ya se encuentra registrado" };
 
-            var createUser = await userManager.CreateAsync(newUser, userDTO.Password);
+            var createUser = await _userManager.CreateAsync(newUser, userDTO.Password);
             if (!createUser.Succeeded)
                 return new ResponseHelper() { Success = false, Message = "Ha ocurrido un error" };
 
-            var checkAdmin = await roleManager.FindByNameAsync("Admin");
+            var checkAdmin = await _roleManager.FindByNameAsync("Admin");
             if (checkAdmin is null)
             {
-                await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
-                await userManager.AddToRoleAsync(newUser, "Admin");
+                await _roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
+                await _userManager.AddToRoleAsync(newUser, "Admin");
                 return new ResponseHelper() { Success = true, Message = "Cuenta creada con éxito." };
             }
             else
             {
-                var checkUser = await roleManager.FindByNameAsync("Empleado");
+                var checkUser = await _roleManager.FindByNameAsync("Empleado");
                 if (checkUser is null)
-                    await roleManager.CreateAsync(new IdentityRole() { Name = "Empleado" });
+                    await _roleManager.CreateAsync(new IdentityRole() { Name = "Empleado" });
 
-                await userManager.AddToRoleAsync(newUser, "Empleado");
+                await _userManager.AddToRoleAsync(newUser, "Empleado");
                 return new ResponseHelper() { Success = true, Message = "Cuenta creada" };
             }
         }
@@ -69,21 +68,23 @@ namespace Rush.Infraestructure.Repositories.Auth
                 return response;
             }
 
-            var getUser = await userManager.FindByEmailAsync(loginDTO.Email);
+            var getUser = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (getUser is null)
                 return new ResponseHelperAuth() { Success = false, Message = "Usuario no encontrado" };
 
-            bool checkUserPasswords = await userManager.CheckPasswordAsync(getUser, loginDTO.Password);
+            bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
                 return new ResponseHelperAuth() { Success = false, Message = "Usuario o contraseña incorrectos" };
 
-            var getUserRole = await userManager.GetRolesAsync(getUser);
+            var getUserRole = await _userManager.GetRolesAsync(getUser);
             var userSession = new UserSession(getUser.Id, getUser.Email, getUserRole.First());
-            string token = GenerateToken(userSession);
+
+            TokenResponse generateTokens = await _tokenRepository.GenerateTokens(getUser, userSession);
 
             response.Success = true;
             response.Message = "Acceso correcto";
-            response.Token = token;
+            response.Token = generateTokens;
+
             response.User.Id = getUser.Id;
             response.User.Rol = getUserRole.First();
             response.User.Email = getUser.Email;
@@ -92,24 +93,46 @@ namespace Rush.Infraestructure.Repositories.Auth
             return response;
         }
 
-        private string GenerateToken(UserSession user)
+        public async Task<TokenResponse> RefreshToken(string request)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var userClaims = new[]
+            var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(q => q.RefreshTokenValue == request);
+
+            if (refreshToken is null ||
+                refreshToken.Active == false ||
+                refreshToken.Expiration <= DateTime.UtcNow)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-            var token = new JwtSecurityToken(
-                issuer: config["Jwt:Issuer"],
-                audience: config["Jwt:Audience"],
-                claims: userClaims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: credentials
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                throw new ForbiddenAccessException();
+            }
+
+            if (refreshToken.Used)
+            {
+               Log.Error("El refresh token del usuario ya fue usado", refreshToken.UserId, refreshToken.RefreshTokenValue);
+
+                var refreshTokens = await _context.RefreshTokens.Where(q => q.Active && q.Used == false && q.UserId == refreshToken.UserId)
+                .ToListAsync();
+
+                foreach (var rt in refreshTokens)
+                {
+                    rt.Used = true;
+                    rt.Active = false;
+                }
+
+                await _context.SaveChangesAsync();
+
+                throw new ForbiddenAccessException();
+            }
+
+            refreshToken.Used = true;
+
+            var user = await _context.Users.FindAsync(refreshToken.UserId) ?? throw new ForbiddenAccessException();
+            var getUserRole = await _userManager.GetRolesAsync(user);
+
+            UserSession userSession = new(user.Id, user.Email, getUserRole.First());
+
+            var generateTokens = await _tokenRepository.GenerateTokens(user, userSession);
+
+            return generateTokens;
+
         }
     }
 }

@@ -33,9 +33,13 @@ public static class DependencyInjection
     /// <param name="services">Infrastructure Section</param>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        
-        
-        
+
+
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+         .AddEntityFrameworkStores<ApplicationDbContext>()
+         .AddSignInManager()
+         .AddRoles<IdentityRole>();
+
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -53,18 +57,36 @@ public static class DependencyInjection
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                 ClockSkew = TimeSpan.Zero
             };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = ctx =>
+                {
+                   
+                    ctx.Request.Cookies.TryGetValue("access_token", out var accessToken);
+                    if (!string.IsNullOrEmpty(accessToken))
+                    {
+                        ctx.Token = accessToken;
+                    }
+
+                    ctx.Request.Cookies.TryGetValue("refresh_token", out var refreshToken);
+                    if (!string.IsNullOrEmpty(refreshToken))
+                    {
+                        ctx.HttpContext.Items["refresh_token"] = refreshToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
+
+
         });
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddSignInManager()
-            .AddRoles<IdentityRole>();
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-        
-        services.AddScoped<IAuthRepository, AuthRepository>();
-        
+                
         AddServices(services);
         AddRepository(services);
         
@@ -93,5 +115,6 @@ public static class DependencyInjection
         services.AddScoped<IResourceRepository, ResourceRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
+        services.AddScoped<ITokenRepository, TokenRepository>();
     }
 }

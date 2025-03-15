@@ -24,20 +24,18 @@ namespace Rush.WebAPI
             
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
-    
-            services.AddCors(options =>
+
+             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllHeaders",
-                    builder =>
-                    {
-                        builder
-                            .AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
-    
+                options.AddPolicy("VueFrontend", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); 
+                });
             });
-            
+
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>

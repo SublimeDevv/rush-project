@@ -125,5 +125,24 @@ namespace Rush.Application.Services.Auth
 
             return response;
         }
+
+        public async Task<ResponseHelper> RefreshToken(string request)
+        {
+            ResponseHelper response = new();
+            try
+            {
+                response.Data = await _authRepository.RefreshToken(request);
+                response.Success = true;
+                response.Message = "Token refrescado correctamente.";
+            }
+            catch (Exception e)
+            {
+                response.Message = e.Message;
+            }
+
+            return response;
+
+        }
+
     }
 }

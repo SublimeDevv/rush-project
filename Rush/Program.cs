@@ -46,8 +46,8 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAllHeaders");
-
+app.UseCors("VueFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
