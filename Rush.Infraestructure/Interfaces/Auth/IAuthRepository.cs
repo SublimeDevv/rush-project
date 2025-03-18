@@ -7,7 +7,7 @@ namespace Rush.Infraestructure.Interfaces.Auth
     public interface IAuthRepository
     {
         Task<ResponseHelper> CreateAccount(UserDTO userDTO);
-        Task<ResponseHelperAuth> LoginAccount(LoginDTO loginDTO);
+        Task<ResponseHelper> LoginAccount(LoginDTO loginDTO);
         Task<TokenResponse> RefreshToken(string request);
     }
 }

@@ -43,9 +43,9 @@ namespace Rush.Application.Services.Auth
             return response;
         }
 
-        public async Task<ResponseHelperAuth> LoginAccount(LoginDTO loginDTO)
+        public async Task<ResponseHelper> LoginAccount(LoginDTO loginDTO)
         {
-            ResponseHelperAuth response = new();
+            ResponseHelper response = new();
             try
             {
                 var result = await _authRepository.LoginAccount(loginDTO);

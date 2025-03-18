@@ -27,10 +27,12 @@ namespace Rush.WebAPI.Controllers.Auth
         {
             var response = await authService.LoginAccount(loginDTO);
 
+            TokenResponse? getToken = response.Data as TokenResponse;
+
             if (response.Success)
             {
-                SetTokenCookie("access_token", response.Token.AccessToken, 15);
-                SetTokenCookie("refresh_token", response.Token.RefreshToken, 60 * 24 * 7);
+                SetTokenCookie("access_token", getToken.AccessToken, 15);
+                SetTokenCookie("refresh_token", getToken.RefreshToken, 60 * 24 * 7);
             }
 
             return Ok(response);
@@ -92,7 +94,7 @@ namespace Rush.WebAPI.Controllers.Auth
                 var user = await _userManager.GetUserAsync(User);
 
                 if (user == null)
-                    return Ok(new ResponseHelperAuth // Es Ok porque sino tira puro error el front en la consola
+                    return Ok(new ResponseHelper // Es Ok porque sino tira puro error el front en la consola
                     {
                         Success = false,
                         Message = "Sesión no válida"
@@ -100,11 +102,11 @@ namespace Rush.WebAPI.Controllers.Auth
 
                 var roles = await _userManager.GetRolesAsync(user);
 
-                return Ok(new ResponseHelperAuth
+                return Ok(new ResponseHelper
                 {
                     Success = true,
-                    Message = "Sesión válida",
-                    User = new User 
+                    Message = $"Sesión valida con: {user.UserName}",
+                    Data = new User 
                     {
                         Id = user.Id,
                         Name = user.UserName,

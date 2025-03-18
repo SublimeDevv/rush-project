@@ -56,10 +56,10 @@ namespace Rush.Infraestructure.Repositories.Auth
             }
         }
 
-        public async Task<ResponseHelperAuth> LoginAccount(LoginDTO loginDTO)
+        public async Task<ResponseHelper> LoginAccount(LoginDTO loginDTO)
         {
 
-            ResponseHelperAuth response = new();
+            ResponseHelper response = new();
 
             if (loginDTO == null)
             {
@@ -70,11 +70,11 @@ namespace Rush.Infraestructure.Repositories.Auth
 
             var getUser = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (getUser is null)
-                return new ResponseHelperAuth() { Success = false, Message = "Usuario no encontrado" };
+                return new ResponseHelper() { Success = false, Message = "Usuario no encontrado" };
 
             bool checkUserPasswords = await _userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
-                return new ResponseHelperAuth() { Success = false, Message = "Usuario o contraseña incorrectos" };
+                return new ResponseHelper() { Success = false, Message = "Usuario o contraseña incorrectos" };
 
             var getUserRole = await _userManager.GetRolesAsync(getUser);
             var userSession = new UserSession(getUser.Id, getUser.Email, getUserRole.First());
@@ -83,12 +83,7 @@ namespace Rush.Infraestructure.Repositories.Auth
 
             response.Success = true;
             response.Message = "Acceso correcto";
-            response.Token = generateTokens;
-
-            response.User.Id = getUser.Id;
-            response.User.Rol = getUserRole.First();
-            response.User.Email = getUser.Email;
-            response.User.AvatarURL = getUser.AvatarURL;
+            response.Data = generateTokens;
 
             return response;
         }
