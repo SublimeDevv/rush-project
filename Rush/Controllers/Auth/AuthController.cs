@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Auth;
@@ -125,7 +126,7 @@ namespace Rush.WebAPI.Controllers.Auth
                 });
             }
         }
-
+        
         private void SetTokenCookie(string name, string token, int expireMinutes, string path = "/")
         {
             Response.Cookies.Append(
