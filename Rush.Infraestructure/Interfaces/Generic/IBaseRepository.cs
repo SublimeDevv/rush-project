@@ -49,5 +49,8 @@ namespace Rush.Infraestructure.Repositories.Generic
         
         Task<T?> GetSingleWithRelationsAsync(Expression<Func<T, bool>>? filter = null);
 
+        string GetIdUser();
+        string GetRol();
+
     }
 }
