@@ -5,13 +5,14 @@ using Rush.Domain.Entities.Resources;
 using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.Resources;
 using Rush.Infraestructure.Repositories.Generic;
+using System.Security.Claims;
 
 namespace Rush.Infraestructure.Repositories.Resources
 {
     class ResourceRepository: BaseRepository<Resource>, IResourceRepository
     {
         private readonly ApplicationDbContext _context;
-        public ResourceRepository(ApplicationDbContext context) : base(context)
+        public ResourceRepository(ApplicationDbContext context, ClaimsPrincipal user) : base(context, user)
         {
             _context = context;
         }

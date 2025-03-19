@@ -3,6 +3,7 @@ using Rush.Infraestructure;
 using Rush.WebAPI;
 using Serilog;
 using Rush.Application;
+using Microsoft.AspNetCore.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,9 @@ builder.Services.AddApplication(builder.Configuration);
 
 
 var app = builder.Build();
+
+app.UseWebSockets(); 
+
 
 if (app.Environment.IsDevelopment())
 {

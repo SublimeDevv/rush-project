@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Rush.Domain.Entities;
 using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.Activities;
+using Rush.Infraestructure.Interfaces.AuditLogs;
 using Rush.Infraestructure.Interfaces.Auth;
 using Rush.Infraestructure.Interfaces.Employees;
 using Rush.Infraestructure.Interfaces.ProjectResources;
@@ -17,6 +18,7 @@ using Rush.Infraestructure.Interfaces.Projects;
 using Rush.Infraestructure.Interfaces.Resources;
 using Rush.Infraestructure.Interfaces.Tasks;
 using Rush.Infraestructure.Repositories.Activities;
+using Rush.Infraestructure.Repositories.AuditLogs;
 using Rush.Infraestructure.Repositories.Auth;
 using Rush.Infraestructure.Repositories.Employees;
 using Rush.Infraestructure.Repositories.ProjectResources;
@@ -118,5 +120,6 @@ public static class DependencyInjection
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
     }
 }
