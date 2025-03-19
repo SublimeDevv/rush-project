@@ -35,5 +35,12 @@ namespace Rush.Application.Services.Projects
             _managementService.ManageRoleAssignment(createProjectDto.EmployeeId, "Supervisor");
         }
         
+        public async Task<Project?> GetById(Guid id)
+        {
+            var project = await _repository.GetById(id);
+
+            return project;
+        }
+        
     }
 }

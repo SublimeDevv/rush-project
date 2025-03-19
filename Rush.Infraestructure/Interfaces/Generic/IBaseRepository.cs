@@ -47,7 +47,8 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// <returns></returns>
         Task<T?> GetSingleAsync(Expression<Func<T, bool>>? filter = null);
         
-        Task<T?> GetSingleWithRelationsAsync(Expression<Func<T, bool>>? filter = null);
+        Task<T?> GetSingleWithRelationsAsync(Expression<Func<T, bool>>? filter = null,
+            params Expression<Func<T, object>>[] includes);
 
     }
 }

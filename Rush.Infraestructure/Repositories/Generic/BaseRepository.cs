@@ -140,37 +140,47 @@ namespace Rush.Infraestructure.Repositories.Generic
 
             return await query.FirstOrDefaultAsync();
         }
-
-        public virtual async Task<T?> GetSingleWithRelationsAsync(Expression<Func<T, bool>>? filter = null)
+        
+        public virtual async Task<T?> GetSingleWithRelationsAsync(
+            Expression<Func<T, bool>>? filter = null,
+            params Expression<Func<T, object>>[] includes)
         {
             var query = Context.Set<T>().AsQueryable();
 
-            var navigations = Context.Model.FindEntityType(typeof(T))?
-                .GetNavigations()
-                .Select(n => n.Name)
-                .ToList();
-
-            if (navigations != null)
+            if (includes.Length > 0)
             {
-                foreach (var navigation in navigations)
+                foreach (var include in includes)
                 {
-                    query = query.Include(navigation);
+                    query = query.Include(include);
+                }
+            }
+            else
+            {
+                var navigations = Context.Model.FindEntityType(typeof(T))?
+                    .GetNavigations()
+                    .Select(n => n.Name)
+                    .ToList();
+
+                if (navigations != null)
+                {
+                    foreach (var navigation in navigations)
+                    {
+                        query = query.Include(navigation);
+                    }
                 }
             }
             
             if (typeof(T).GetProperty("IsDeleted") != null)
             {
-                query = query
-                    .Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
             }
 
             if (filter != null)
             {
                 query = query.Where(filter);
-            }
+            } ;
 
-            return await query.FirstOrDefaultAsync();
+            return query.FirstOrDefault();
         }
-
     }
 }

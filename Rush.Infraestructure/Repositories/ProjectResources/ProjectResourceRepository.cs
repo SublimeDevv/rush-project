@@ -1,4 +1,5 @@
-﻿using Rush.Domain.Entities.ProjectResources;
+﻿using System.Linq.Expressions;
+using Rush.Domain.Entities.ProjectResources;
 using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.ProjectResources;
 using Rush.Infraestructure.Repositories.Generic;
@@ -12,5 +13,6 @@ namespace Rush.Infraestructure.Repositories.ProjectResources
         {
             _context = context;
         }
+        
     }
 }

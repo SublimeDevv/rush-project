@@ -6,5 +6,6 @@ namespace Rush.Application.Interfaces.Tasks
 {
     public interface ITaskService: IServiceBase<Task, TaskDTO>
     {
+        
     }
 }

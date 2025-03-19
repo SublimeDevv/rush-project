@@ -1,6 +1,9 @@
+using Rush.Application.Interfaces.Base;
+using Rush.Domain.Entities;
+
 namespace Rush.Application.Interfaces.User;
 
-public class IUsersService
+public interface IUsersService
 {
-    
+    public Task<string> GetRoleName(Guid Id);
 }
