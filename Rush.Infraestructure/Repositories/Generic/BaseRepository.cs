@@ -25,7 +25,7 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// Initializes a new instance of the <see cref="BaseRepository{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public BaseRepository(ApplicationDbContext context)
+        public BaseRepository(ApplicationDbContext context, ClaimsPrincipal user)
         {
             Context = context;
             var model = context.Model;
