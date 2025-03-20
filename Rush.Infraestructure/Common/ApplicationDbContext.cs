@@ -9,6 +9,7 @@ using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.ProjectResources;
 using Rush.Domain.Entities.Projects;
 using Rush.Domain.Entities.Resources;
+using Rush.Domain.Entities.TaskEmployees;
 using Task = Rush.Domain.Entities.Tasks.Task;
 
 namespace Rush.Infraestructure.Common
@@ -29,6 +30,8 @@ namespace Rush.Infraestructure.Common
         public DbSet<Employee> Employees { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+        public DbSet<TaskEmployees> TaskEmployees {get; set;}
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

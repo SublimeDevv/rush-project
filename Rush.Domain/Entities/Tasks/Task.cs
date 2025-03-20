@@ -23,6 +23,8 @@ namespace Rush.Domain.Entities.Tasks
         public DateTime? StartDate { get; set; } = null!;
         public DateTime? EndTime { get; set; } = null!;
 
+        
+        public List<TaskEmployees.TaskEmployees> TaskEmployees { get; set; } = [];
         public List<Activity> Activities { get; set; } = [];
 
     }
