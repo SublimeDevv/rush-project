@@ -25,6 +25,7 @@ namespace Rush.Domain.Entities.Projects
 
         public List<Employee>? Employee { get; set; } = [];
 
+        public List<TaskEmployees.TaskEmployees> TaskEmployees { get; set; } = [];
         public List<Task>? Tasks { get; set; } = [];
 
     }

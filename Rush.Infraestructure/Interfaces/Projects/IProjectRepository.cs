@@ -5,6 +5,12 @@ namespace Rush.Infraestructure.Interfaces.Projects
 {
     public interface IProjectRepository: IBaseRepository<Project>
     {
+
+        public Task<List<Project>> GetAllForEmployee(Guid employeeId);
+        
         public Task<Project?> GetById(Guid id);
+        
+        public Task<Project?> GetById(Guid id, Guid userId);
+
     }
 }

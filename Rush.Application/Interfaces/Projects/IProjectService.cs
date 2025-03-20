@@ -6,7 +6,10 @@ namespace Rush.Application.Interfaces.Projects
 {
     public interface IProjectService: IServiceBase<Project, ProjectDTO>
     {
+        public Task<List<Project?>> GetAllForEmployee(Guid employeeId);
         public Task Create(CreateProjectDTO createProjectDto);
         public Task<Project?> GetById(Guid id);
+        public Task<Project?> GetById(Guid id, Guid userId);
+
     }
 }

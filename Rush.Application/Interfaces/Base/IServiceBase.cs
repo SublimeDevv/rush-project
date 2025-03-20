@@ -7,6 +7,7 @@ namespace Rush.Application.Interfaces.Base
     public interface IServiceBase<T, TDto> where T : class where TDto : BaseDTO
     {
         Task<ResponseHelper> GetAllAsync(Expression<Func<T, bool>>? filter = null);
+        
         Task<ResponseHelper> InsertAsync(T entity);
         Task<ResponseHelper> UpdateAsync(T entity);
         Task<ResponseHelper> GetById(Expression<Func<T, bool>>? filter = null);

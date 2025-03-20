@@ -21,6 +21,11 @@ namespace Rush.Application.Services.Projects
             _repository = repository;
         }
         
+        public async Task<List<Project?>> GetAllForEmployee(Guid employeeId)
+        {
+            return await _repository.GetAllForEmployee(employeeId);
+        }
+        
         public async Task Create(CreateProjectDTO createProjectDto)
         {
             Project project = new Project()
@@ -41,6 +46,13 @@ namespace Rush.Application.Services.Projects
 
             return project;
         }
-        
+
+        public async Task<Project?> GetById(Guid id, Guid userId)
+        {
+            var project = await _repository.GetById(id, userId);
+
+            return project;
+        }
+
     }
 }
