@@ -7,6 +7,7 @@ namespace Rush.Infraestructure.Interfaces.Activities
     public interface IActivityRepository : IBaseRepository<Activity>
     {
         public Task<List<ActivityVM>> GetEmployeeActivities(Guid EmployeeId);
+        public Task<ActivityVM?> MarkAsCompletedActivity(Guid ActivityId);
 
     }
 }

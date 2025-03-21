@@ -9,7 +9,7 @@ using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Infraestructure.Repositories.Activities
 {
-    public class ActivityRepository: BaseRepository<Activity>, IActivityRepository
+    public class ActivityRepository : BaseRepository<Activity>, IActivityRepository
     {
         private readonly ApplicationDbContext _context;
         public ActivityRepository(ApplicationDbContext context, ClaimsPrincipal user) : base(context, user)
@@ -39,5 +39,36 @@ namespace Rush.Infraestructure.Repositories.Activities
             return activities;
 
         }
+
+        public async Task<ActivityVM?> MarkAsCompletedActivity(Guid ActivityId)
+        {
+            var activity = await _context.Activities.FindAsync(ActivityId);
+            if (activity == null)
+            {
+                return null;
+            }
+
+            var task = await _context.Tasks.FindAsync(activity.TaskId);
+            if (task == null)
+            {
+                return null;
+            }
+
+            activity.Task = task;
+
+            activity.Status = StatusActivity.COMPLETED;
+            _context.Activities.Update(activity);
+            var result = await _context.SaveChangesAsync();
+            Console.WriteLine(result);
+            return new ActivityVM
+            {
+                Id = activity.Id,
+                Name = activity.Name,
+                Description = activity.Description,
+                Status = activity.Status.ToString(),
+                Task = task != null ? new TaskVM { Id = task.Id, Name = task.Name, Description = task.Description } : null
+            };
+        }
+
     }
 }

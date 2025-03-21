@@ -34,6 +34,13 @@ namespace Rush.WebAPI.Controllers.Employees
             return Ok("Proyecto retirado");
         }
 
+        [HttpGet("GetEmployeeDataDashboard")]
+        public async Task<IActionResult> GetEmployeeDataDashboard(Guid EmployeeId)
+        {
+            var result = await _service.GetEmployeeDataDashboard(EmployeeId);
+            return Ok(result);
+        }
+
         [HttpGet("GetEmployeeData")]
         public async Task<IActionResult> GetEmployeeData(Guid userId)
         {

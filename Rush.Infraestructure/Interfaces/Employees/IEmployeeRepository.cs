@@ -7,8 +7,8 @@ namespace Rush.Infraestructure.Interfaces.Employees
 {
     public interface IEmployeeRepository: IBaseRepository<Employee>
     {
+        public Task<EmployeeDataDashboardVM> GetEmployeeDataDashboard(Guid EmployeeId);
         public Task<EmployeeVM> GetEmployeeData(Guid userId);
-
         public Task<ProjectDataByEmployeeVM> GetEmployeeProject(Guid employeeId);
         public Task<List<EmployeeProjectDataVM>> GetEmployeesFromProject(Guid projectId);
 

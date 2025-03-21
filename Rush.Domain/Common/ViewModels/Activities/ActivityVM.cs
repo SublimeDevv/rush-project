@@ -9,6 +9,7 @@ namespace Rush.Domain.Common.ViewModels.Activities
         public string Name { get; set; }
         public string Description { get; set; }
         public string Status { get; set; }
-        public TaskVM Task { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public TaskVM? Task { get; set; }
     }
 }

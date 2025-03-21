@@ -24,5 +24,12 @@ namespace Rush.WebAPI.Controllers.Activities
             return Ok(result);
         }
 
+        [HttpGet("MarkAsCompletedActivity")]
+        public async Task<IActionResult> MarkAsCompletedActivity(Guid ActivityId)
+        {
+            var result = await _service.MarkAsCompletedActivity(ActivityId);
+            return Ok(result);
+        }
+
     }
 }

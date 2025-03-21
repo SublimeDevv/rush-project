@@ -94,6 +94,34 @@ namespace Rush.Application.Services.Employees
             
         }
 
+        public async Task<ResponseHelper> GetEmployeeDataDashboard(Guid EmployeeId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var employeeDashboardData = await _repository.GetEmployeeDataDashboard(EmployeeId);
+
+                if (employeeDashboardData == null)
+                {
+
+                    response.Message = "No se encontraron los datos";
+                    response.Success = false;
+                }
+
+                response.Data = employeeDashboardData;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         public async Task<ResponseHelper> GetEmployeeData(Guid userId)
         {
             ResponseHelper response = new();

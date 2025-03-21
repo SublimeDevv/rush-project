@@ -49,5 +49,32 @@ namespace Rush.Application.Services.Activities
             return response;
         }
 
+        public async Task<ResponseHelper> MarkAsCompletedActivity(Guid ActivityId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                ActivityVM? activity = await _repository.MarkAsCompletedActivity(ActivityId);
+
+                if (activity == null)
+                {
+
+                    response.Message = "No se encontro la actividad";
+                    response.Success = false;
+                }
+
+                response.Data = activity;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
     }
 }
