@@ -16,6 +16,13 @@ namespace Rush.WebAPI.Controllers.Activities
         {
             _service = service;
         }
-        
+
+        [HttpGet("GetEmployeeActivities")]
+        public async Task<IActionResult> GetEmployeeActivities(Guid EmployeeId)
+        {
+            var result = await _service.GetEmployeeActivities(EmployeeId);
+            return Ok(result);
+        }
+
     }
 }

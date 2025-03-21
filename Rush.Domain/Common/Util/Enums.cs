@@ -21,6 +21,24 @@
             Gerente,
         }
 
+        public enum LogLevel
+        {
+            INFO,
+            WARNING,
+            ERROR,
+            SUCCESS
+        }
+
+        public enum HttpMethodLog
+        {
+            GET,
+            POST,
+            PUT,
+            DELETE,
+            PATCH
+        }
+
+
         public enum StatusProject
         {
             /*Fase del proyecto en la que se empieza la reclutacion y la definicion de este*/DEFINING,    

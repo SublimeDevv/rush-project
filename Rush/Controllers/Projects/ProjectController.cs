@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Projects;
+using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Project;
 using Rush.Domain.Entities.Projects;
 using Rush.WebAPI.Controllers.BaseGeneric;
@@ -22,7 +24,26 @@ namespace Rush.WebAPI.Controllers.Projects
         {
             await _service.Create(projectDto);
             
-            return Ok("Proyecto creado");
+            return Ok(new ResponseHelper()
+            {
+                Success = true,
+                Message ="Proyecto creado"
+            });
         }
+        
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetByIdMine(Guid id)
+        {
+            return Ok(
+                new ResponseHelper()
+                {
+                    Success = true,
+                    Message = "Correctamente bien ejecutado",
+                    Data = await _service.GetById(id)
+                }
+            );  
+        }
+
+        
     }
 }

@@ -1,5 +1,13 @@
-﻿using System.Linq.Expressions;
+﻿using System.Data;
+using System.Linq.Expressions;
+using System.Security.Claims;
+using Dapper;
+using ExpressionExtensionSQL;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Rush.Domain.Common.ViewModels.Util;
+using Rush.Domain.Entities.Audit;
 using Rush.Infraestructure.Common;
 
 namespace Rush.Infraestructure.Repositories.Generic
@@ -10,14 +18,33 @@ namespace Rush.Infraestructure.Repositories.Generic
         /// The context
         /// </summary>
         protected readonly ApplicationDbContext Context;
+        private readonly ClaimsPrincipal _user;
+        private string tableName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseRepository{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public BaseRepository(ApplicationDbContext context)
+        public BaseRepository(ApplicationDbContext context, ClaimsPrincipal user)
         {
             Context = context;
+            var model = context.Model;
+
+            var entityTypes = model.GetEntityTypes();
+
+            try
+            {
+                var entityTypeOfFooBar = entityTypes.First(t => t.ClrType == typeof(T));
+                var tableNameAnnotation = entityTypeOfFooBar.GetAnnotation("Relational:TableName");
+                var tableNameOfFooBarSet = tableNameAnnotation.Value.ToString();
+                tableName = tableNameOfFooBarSet;
+            }
+            catch (Exception ex)
+            {
+                //Una entidad que hereda de base entity que no tiene tabla
+            }
+            _user = user;
+
         }
 
         /// <summary>
@@ -36,7 +63,27 @@ namespace Rush.Infraestructure.Repositories.Generic
             Context.Set<T>().Add(entity);
             await Context.SaveChangesAsync();
 
-            return (Guid)typeof(T).GetProperty("Id")?.GetValue(entity);
+            var idRow = (Guid)typeof(T).GetProperty("Id")?.GetValue(entity);
+
+            AuditChanges audit = new AuditChanges()
+            {
+                Id = Guid.NewGuid(),
+                Action = "INSERT",
+                TableName = tableName,
+                OldValue = "",
+                NewValue = JsonConvert.SerializeObject(entity),
+                User = this.GetIdUser(),
+                Role = this.GetRol(),
+                IPAddress = "",
+                RowVersion = DateTime.Now,
+                IsDeleted = false,
+                IdEntity = idRow,
+                CreatedAt = createdAtProperty != null ? (DateTime)createdAtProperty.GetValue(entity) : DateTime.Now
+            };
+
+            await AuditTable(audit);
+
+            return idRow;
         }
 
 
@@ -48,7 +95,32 @@ namespace Rush.Infraestructure.Repositories.Generic
         public virtual async Task<int> UpdateAsync(T entity)
         {
             Context.Set<T>().Update(entity);
-            return await Context.SaveChangesAsync();
+
+            var result = await Context.SaveChangesAsync();
+
+            if (result != 0)
+            {
+                var idRow = (Guid)typeof(T).GetProperty("Id")?.GetValue(entity);
+                AuditChanges audit = new AuditChanges()
+                {
+                    Id = Guid.NewGuid(),
+                    Action = "UPDATE",
+                    TableName = tableName,
+                    OldValue = "",
+                    NewValue = JsonConvert.SerializeObject(entity),
+                    User = this.GetIdUser(),
+                    Role = this.GetRol(),
+                    IPAddress = "" +
+                    "",
+                    RowVersion = DateTime.Now,
+                    IsDeleted = false,
+                    IdEntity = idRow,
+                    CreatedAt = DateTime.Now
+                };
+                await AuditTable(audit);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -67,7 +139,30 @@ namespace Rush.Infraestructure.Repositories.Generic
             {
                 Context.Set<T>().Remove(entity);
             }
-            return await Context.SaveChangesAsync();
+
+            var result = await Context.SaveChangesAsync();
+
+            if (result != 0)
+            {
+                AuditChanges audit = new()
+                {
+                    Id = Guid.NewGuid(),
+                    Action = "DELETE",
+                    TableName = tableName,
+                    OldValue = string.Empty,
+                    NewValue = string.Empty,
+                    User = this.GetIdUser(),
+                    Role = this.GetRol(),
+                    IPAddress = "",
+                    RowVersion = DateTime.Now,
+                    IsDeleted = false,
+                    IdEntity = (Guid)entity.GetType().GetProperty("Id").GetValue(entity),
+                    CreatedAt = DateTime.Now
+                };
+
+                await AuditTable(audit);
+            }
+            return result;
         }
 
         /// <summary>
@@ -89,7 +184,30 @@ namespace Rush.Infraestructure.Repositories.Generic
                 {
                     Context.Set<T>().Remove(entity);
                 }
-                return await Context.SaveChangesAsync();
+
+                var result = await Context.SaveChangesAsync();
+
+                if (result != 0)
+                {
+                    AuditChanges audit = new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Action = "DELETE",
+                        TableName = tableName,
+                        OldValue = string.Empty,
+                        NewValue = string.Empty,
+                        User = this.GetIdUser(),
+                        Role = this.GetRol(),
+                        IPAddress = "",
+                        RowVersion = DateTime.Now,
+                        IsDeleted = false,
+                        IdEntity = id,
+                        CreatedAt = DateTime.Now
+                    };
+
+                    await AuditTable(audit);
+                }
+                return result;
             }
             return 0;
         }
@@ -140,37 +258,134 @@ namespace Rush.Infraestructure.Repositories.Generic
 
             return await query.FirstOrDefaultAsync();
         }
-
-        public virtual async Task<T?> GetSingleWithRelationsAsync(Expression<Func<T, bool>>? filter = null)
+        
+        public virtual async Task<T?> GetSingleWithRelationsAsync(
+            Expression<Func<T, bool>>? filter = null,
+            params Expression<Func<T, object>>[] includes)
         {
             var query = Context.Set<T>().AsQueryable();
 
-            var navigations = Context.Model.FindEntityType(typeof(T))?
-                .GetNavigations()
-                .Select(n => n.Name)
-                .ToList();
-
-            if (navigations != null)
+            if (includes.Length > 0)
             {
-                foreach (var navigation in navigations)
+                foreach (var include in includes)
                 {
-                    query = query.Include(navigation);
+                    query = query.Include(include);
+                }
+            }
+            else
+            {
+                var navigations = Context.Model.FindEntityType(typeof(T))?
+                    .GetNavigations()
+                    .Select(n => n.Name)
+                    .ToList();
+
+                if (navigations != null)
+                {
+                    foreach (var navigation in navigations)
+                    {
+                        query = query.Include(navigation);
+                    }
                 }
             }
             
             if (typeof(T).GetProperty("IsDeleted") != null)
             {
-                query = query
-                    .Where(e => EF.Property<bool>(e, "IsDeleted") == false);
+                query = query.Where(e => EF.Property<bool>(e, "IsDeleted") == false);
             }
 
             if (filter != null)
             {
                 query = query.Where(filter);
-            }
+            } ;
 
-            return await query.FirstOrDefaultAsync();
+            return query.FirstOrDefault();
         }
+
+        public string GetIdUser()
+        {
+            if (this._user == null || !this._user.Identity.IsAuthenticated)
+            {
+                return string.Empty;
+            }
+            return this._user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+        }
+
+        public string GetRol()
+        {
+            if (this._user == null || !this._user.Identity.IsAuthenticated)
+            {
+                return string.Empty;
+            }
+            return this._user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value;
+        }
+
+        public async Task<int> AuditTable(AuditChanges audit)
+        {
+            var sql = @"INSERT INTO [dbo].[Tbl_AuditChanges]
+                                   ([Id]
+                                   ,[TableName]
+                                   ,[OldValue]
+                                   ,[NewValue]
+                                   ,[User]
+                                   ,[Role]
+                                   ,[IPAddress]
+                                   ,[RowVersion]
+                                   ,[IsDeleted]
+                                   ,[IdEntity]
+                                   ,[Action]
+                                   ,[CreatedAt])
+                             VALUES
+                                   (@Id
+                                   ,@TableName
+                                   ,@OldValue
+                                   ,@NewValue
+                                   ,@User
+                                   ,@Role
+                                   ,@IPAddress
+                                   ,@RowVersion
+                                   ,@IsDeleted
+                                   ,@IdEntity
+                                   ,@Action
+                                   ,@CreatedAt)";
+
+
+            var result = await Context.Database.GetDbConnection().QueryAsync<int>(sql, audit);
+            return result.FirstOrDefault();
+        }
+
+        public async Task<int> AuditTable(AuditChanges audit, IDbTransaction transaction = null)
+        {
+            var sql = @"INSERT INTO [dbo].[Tbl_AuditChanges]
+                                   ([Id]
+                                   ,[TableName]
+                                   ,[OldValue]
+                                   ,[NewValue]
+                                   ,[User]
+                                   ,[Role]
+                                   ,[IPAddress]
+                                   ,[RowVersion]
+                                   ,[IsDeleted]
+                                   ,[IdEntity]
+                                   ,[Action]
+                                   ,[CreatedAt])
+                             VALUES
+                                   (@Id
+                                   ,@TableName
+                                   ,@OldValue
+                                   ,@NewValue
+                                   ,@User
+                                   ,@Role
+                                   ,@IPAddress
+                                   ,@RowVersion
+                                   ,@IsDeleted
+                                   ,@IdEntity
+                                   ,@Action
+                                   ,@CreatedAt)";
+
+            return await transaction.Connection.ExecuteAsync(sql, audit, transaction);
+
+        }
+
 
     }
 }

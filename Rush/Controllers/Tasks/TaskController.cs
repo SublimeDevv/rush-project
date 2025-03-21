@@ -16,5 +16,13 @@ namespace Rush.WebAPI.Controllers.Tasks
         {
             _service = service;
         }
+
+
+        [HttpGet("GetAllTaskFromProject")]
+        public async Task<IActionResult> GetAllTaskFromProject(Guid ProjectId)
+        {
+            var result = await _service.GetAllTaskFromProject(ProjectId);
+            return Ok(result);
+        }
     }
 }
