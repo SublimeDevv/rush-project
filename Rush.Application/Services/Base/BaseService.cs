@@ -65,6 +65,8 @@ namespace Rush.Application.Services.Base
 
             return response;
         }
+        
+        
 
         public virtual async Task<ResponseHelper> InsertAsync(T entity)
         {
