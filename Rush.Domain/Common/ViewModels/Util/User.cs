@@ -7,5 +7,6 @@
         public string Email { get; set; }
         public string Rol { get; set; }
         public string AvatarURL { get; set; }
+        public string? EmployeeId { get; set; }
     }
 }

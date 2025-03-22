@@ -8,6 +8,7 @@ using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.ProjectResources;
 using Rush.Application.Interfaces.Projects;
 using Rush.Application.Interfaces.Resources;
+using Rush.Application.Interfaces.Tasks;
 using Rush.Application.Services.Activities;
 using Rush.Application.Services.AuditLogs;
 using Rush.Application.Services.Auth;
@@ -16,6 +17,7 @@ using Rush.Application.Services.ProjectResources;
 using Rush.Application.Services.Projects;
 using Rush.Application.Services.Resources;
 using Rush.Application.Services.Seeders;
+using Rush.Application.Services.Tasks;
 using System.Security.Claims;
 
 namespace Rush.Application;
@@ -30,6 +32,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IActivityService, ActivityService>();
+        services.AddScoped<ITaskService, TaskService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IProjectResourceService, ProjectResourceService>();
