@@ -1,11 +1,18 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Services.Base;
+using Rush.Domain.Common.ViewModels.Employees;
+using Rush.Domain.Common.ViewModels.Resources;
+using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Employees;
 using Rush.Domain.Entities;
 using Rush.Domain.Entities.Employees;
+using Rush.Domain.Entities.Projects;
+using Rush.Domain.Entities.Resources;
 using Rush.Infraestructure.Interfaces.Employees;
+using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Application.Services.Employees
 {
@@ -85,6 +92,118 @@ namespace Rush.Application.Services.Employees
             
             return true;
             
+        }
+
+        public async Task<ResponseHelper> GetEmployeeDataDashboard(Guid EmployeeId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var employeeDashboardData = await _repository.GetEmployeeDataDashboard(EmployeeId);
+
+                if (employeeDashboardData == null)
+                {
+
+                    response.Message = "No se encontraron los datos";
+                    response.Success = false;
+                }
+
+                response.Data = employeeDashboardData;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseHelper> GetEmployeeData(Guid userId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                EmployeeVM employee = await _repository.GetEmployeeData(userId);
+
+                if (employee == null)
+                {
+
+                    response.Message = "No se encontró el empleado";
+                    response.Success = false;
+                }
+
+                response.Data = employee;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseHelper> GetEmployeeProject(Guid employeeId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var project = await _repository.GetEmployeeProject(employeeId);
+
+                if (project == null)
+                {
+
+                    response.Message = "No se encontró el proyecto";
+                    response.Success = false;
+                }
+
+                response.Data = project;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseHelper> GetEmployeesFromProject(Guid projectId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var employees = await _repository.GetEmployeesFromProject(projectId);
+
+                if (employees == null)
+                {
+
+                    response.Message = "No se encontraron empleados para este proyecto";
+                    response.Success = false;
+                }
+
+                response.Data = employees;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
     }
 
