@@ -21,7 +21,7 @@
             Gerente,
         }
 
-        public enum LogLevel
+        public enum AuditLogLevel
         {
             INFO,
             WARNING,

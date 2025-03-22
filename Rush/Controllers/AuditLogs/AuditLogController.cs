@@ -8,13 +8,29 @@ namespace Rush.WebAPI.Controllers.AuditLogs
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuditLogController : BaseController<AuditLog, AuditLogDTO>
+    public class AuditLogController(IAuditLogService service) : BaseController<AuditLog, AuditLogDTO>(service)
     {
-        private readonly IAuditLogService _service;
-        public AuditLogController(IAuditLogService service)
-             : base(service)
+        private readonly IAuditLogService _service = service;
+
+        [HttpGet("GetAuditLogs")]
+        public async Task<IActionResult> GetAuditLogs(int level = 0, int httpMethod = 0, int offset = 0, int pageSize = 10)
         {
-            _service = service;
+            var result = await _service.GetAuditLogs(level, httpMethod, offset, pageSize);
+            return Ok(result);
+        }
+
+        [HttpGet("GetCountLogs")]
+        public async Task<IActionResult> GetCountLogs(int level = 0, int httpMethod = 0)
+        {
+            var result = await _service.GetCountLogs(level, httpMethod);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAuditEntities")]
+        public async Task<IActionResult> GetAuditEntities()
+        {
+            var result = await _service.GetAuditEntities();
+            return Ok(result);
         }
 
     }
