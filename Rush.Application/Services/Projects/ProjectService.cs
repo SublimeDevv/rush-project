@@ -21,6 +21,15 @@ namespace Rush.Application.Services.Projects
             _repository = repository;
         }
         
+        public async Task<List<Project?>> GetAll()
+        {
+            var list = await _repository.GetAllAsync();
+
+            list.ToList().OrderBy(c => c.Name);
+
+            return list;
+        }
+        
         public async Task<List<Project?>> GetAllForEmployee(Guid employeeId)
         {
             return await _repository.GetAllForEmployee(employeeId);

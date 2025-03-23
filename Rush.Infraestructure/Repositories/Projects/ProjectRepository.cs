@@ -95,6 +95,7 @@ namespace Rush.Infraestructure.Repositories.Projects
                         ProjectId = pr.ProjectId,
                         ResourceId = pr.ResourceId,
                         Quantity = pr.Quantity,
+                        Resource = pr.Resource,
                         UsedQuantity = pr.UsedQuantity
                     }).ToList()
                 })
@@ -151,7 +152,8 @@ namespace Rush.Infraestructure.Repositories.Projects
                         ProjectId = pr.ProjectId,
                         ResourceId = pr.ResourceId,
                         Quantity = pr.Quantity,
-                        UsedQuantity = pr.UsedQuantity
+                        UsedQuantity = pr.UsedQuantity,
+                        Resource = pr.Resource
                     }).ToList()
                 })
                 .FirstOrDefaultAsync(p => p.Id == id);

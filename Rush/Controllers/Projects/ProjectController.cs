@@ -30,12 +30,14 @@ namespace Rush.WebAPI.Controllers.Projects
             
             if (userValidator.CheckForRole(["Gerente", "Admin"]))
             {
+                var list = await _service.GetAll();
+                
                 return Ok(
                     new ResponseHelper()
                     {
                         Success = true,
                         Message = "Correctamente bien ejecutado",
-                        Data = await _service.GetAllAsync()
+                        Data = list.OrderBy(c => c.Name)
                     }
                 );      
             }
