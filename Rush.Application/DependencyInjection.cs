@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rush.Application.Interfaces.Activities;
+using Rush.Application.Interfaces.Admin;
 using Rush.Application.Interfaces.AuditLogs;
 using Rush.Application.Interfaces.Auth;
 using Rush.Application.Interfaces.Employees;
@@ -10,6 +11,7 @@ using Rush.Application.Interfaces.Projects;
 using Rush.Application.Interfaces.Resources;
 using Rush.Application.Interfaces.Tasks;
 using Rush.Application.Services.Activities;
+using Rush.Application.Services.Admin;
 using Rush.Application.Services.AuditLogs;
 using Rush.Application.Services.Auth;
 using Rush.Application.Services.Employees;
@@ -30,6 +32,7 @@ public static class DependencyInjection
     /// <param name="services">Application Section</param>
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IAdminService, AdminService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<ITaskService, TaskService>();

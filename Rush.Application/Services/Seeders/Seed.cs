@@ -51,7 +51,10 @@ namespace Rush.Application.Services.Seeders
                 {
             new ApplicationUser { UserName = "root@admin.com", Email = "root@admin.com", IsDeleted = false },
             new ApplicationUser { UserName = "supervisor@gmail.com", Email = "supervisor@gmail.com", IsDeleted = false },
-            new ApplicationUser { UserName = "gerente@test.com", Email = "gerente@test.com", IsDeleted = false }
+            new ApplicationUser { UserName = "gerente@test.com", Email = "gerente@test.com", IsDeleted = false },
+            new ApplicationUser { UserName = "sistemas@test.com", Email = "sistemas@test.com", IsDeleted = false },
+            new ApplicationUser { UserName = "recursoshumanos@test.com", Email = "recursoshumanos@test.com", IsDeleted = false }
+
         });
 
                 foreach (var user in users)
@@ -64,6 +67,8 @@ namespace Rush.Application.Services.Seeders
                             "root@admin.com" => "Admin",
                             "supervisor@gmail.com" => "Supervisor",
                             "gerente@test.com" => "Gerente",
+                            "sistemas@test.com" => "Sistemas",
+                            "recursoshumanos@test.com" => "Recursos Humanos",
                             _ => "Empleado"
                         };
                         await _userManager.AddToRoleAsync(user, role);

@@ -20,7 +20,7 @@ namespace Rush.Infraestructure.Repositories.Resources
 
         public async Task<List<ResourceWithProjectVM>> GetResourceWithProjects(Guid Id)
         {
-            string sql = @"SELECT pro.Name, prores.UsedQuantity FROM Tbl_Projects AS pro 
+            string sql = @"SELECT pro.Name, prores.UsedQuantity, prores.ProjectId FROM Tbl_Projects AS pro 
                               INNER JOIN Tbl_ProjectResources AS prores ON pro.Id = prores.ProjectId
                               INNER JOIN Tbl_Resources AS res ON res.Id = prores.ResourceId AND res.IsDeleted = 0
                               WHERE res.Id = @Id AND pro.IsDeleted = 0";
