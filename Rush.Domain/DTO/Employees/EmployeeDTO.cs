@@ -24,4 +24,10 @@ namespace Rush.Domain.DTO.Employees
     public string? Role { get; set; } = "Empleado";
     }
 
+    public class EmployeeDTOForProjectRemoval
+    {
+        public Guid EmployeeId { get; set; }
+        public string? Role { get; set; } = "Empleado";
+    }
+
 }

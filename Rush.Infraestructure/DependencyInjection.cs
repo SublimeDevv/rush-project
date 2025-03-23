@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Rush.Domain.Entities;
 using Rush.Infraestructure.Common;
 using Rush.Infraestructure.Interfaces.Activities;
+using Rush.Infraestructure.Interfaces.Admin;
 using Rush.Infraestructure.Interfaces.AuditLogs;
 using Rush.Infraestructure.Interfaces.Auth;
 using Rush.Infraestructure.Interfaces.Employees;
@@ -18,6 +19,7 @@ using Rush.Infraestructure.Interfaces.Projects;
 using Rush.Infraestructure.Interfaces.Resources;
 using Rush.Infraestructure.Interfaces.Tasks;
 using Rush.Infraestructure.Repositories.Activities;
+using Rush.Infraestructure.Repositories.Admin;
 using Rush.Infraestructure.Repositories.AuditLogs;
 using Rush.Infraestructure.Repositories.Auth;
 using Rush.Infraestructure.Repositories.Employees;
@@ -112,6 +114,7 @@ public static class DependencyInjection
     /// <param name="services">The repository.</param>
     private static void AddRepository(IServiceCollection services)
     {
+        services.AddScoped<IAdminRepository, AdminRepository>();
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IActivityRepository, ActivityRepository>();
         services.AddScoped<ITaskRepository, TaskRepository>();
