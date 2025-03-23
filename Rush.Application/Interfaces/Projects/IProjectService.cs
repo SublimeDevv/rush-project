@@ -8,6 +8,8 @@ namespace Rush.Application.Interfaces.Projects
     {
         public Task<List<Project?>> GetAll();
         public Task<List<Project?>> GetAllForEmployee(Guid employeeId);
+        
+        public Task Update(Guid id, CreateProjectDTO createProjectDto);
         public Task Create(CreateProjectDTO createProjectDto);
         public Task<Project?> GetById(Guid id);
         public Task<Project?> GetById(Guid id, Guid userId);

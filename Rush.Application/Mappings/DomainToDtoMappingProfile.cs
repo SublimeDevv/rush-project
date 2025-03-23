@@ -13,6 +13,8 @@ using Rush.Domain.Entities.ProjectResources;
 using Rush.Domain.DTO.ProjectResources;
 using Rush.Domain.Entities.Activities;
 using Rush.Domain.DTO.Activities;
+using Rush.Domain.Entities.Audit;
+using Rush.Domain.DTO.AuditLogs;
 
 
 namespace Rush.Application.Mappings
@@ -28,6 +30,7 @@ namespace Rush.Application.Mappings
             this.CreateMap<Project, ProjectDTO>().ReverseMap();
             this.CreateMap<ProjectResource, ProjectResourceDTO>().ReverseMap();
             this.CreateMap<Resource, ResourceDTO>().ReverseMap();
+            this.CreateMap<AuditLog, AuditLogDTO>().ReverseMap();
 
         }
     }

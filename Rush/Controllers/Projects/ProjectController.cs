@@ -94,5 +94,18 @@ namespace Rush.WebAPI.Controllers.Projects
             });
         }
         
+        [HttpPut("UpdateProject/{id}")]
+        public async Task<IActionResult> UpdateProject(Guid id, [FromBody] CreateProjectDTO projectDto)
+        {
+            
+            await _service.Update(id, projectDto);
+            
+            return Ok(new ResponseHelper()
+            {
+                Success = true,
+                Message ="Proyecto creado"
+            });
+        }
+        
     }
 }

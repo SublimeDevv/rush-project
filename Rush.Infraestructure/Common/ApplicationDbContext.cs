@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Rush.Domain.Entities;
 using Rush.Domain.Entities.Activities;
+using Rush.Domain.Entities.Audit;
 using Rush.Domain.Entities.Auth;
 using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.ProjectResources;
@@ -24,13 +25,15 @@ namespace Rush.Infraestructure.Common
         public DbSet<ApplicationUser> AppUsers { get; set; }        
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
+
+        public DbSet<TaskEmployees> TaskEmployees {get; set;}
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ProjectResource> ProjectResources { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
-        public DbSet<TaskEmployees> TaskEmployees {get; set;}
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

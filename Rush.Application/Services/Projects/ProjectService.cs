@@ -3,6 +3,7 @@ using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
 using Rush.Application.Services.Base;
 using Rush.Domain.DTO.Project;
+using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.Projects;
 using Rush.Infraestructure.Interfaces.Employees;
 using Rush.Infraestructure.Interfaces.Projects;
@@ -41,12 +42,36 @@ namespace Rush.Application.Services.Projects
             {
                 Name = createProjectDto.Name,
                 Description = createProjectDto.Description,
-                StartDate = createProjectDto.StartDate,
             };
             
             await _repository.InsertAsync(project);
             
-            _managementService.ManageRoleAssignment(createProjectDto.EmployeeId, "Supervisor");
+            if (Guid.TryParse(createProjectDto.EmployeeId.ToString(), out Guid employeeId))
+            {
+                _managementService.ManageRoleAssignment(employeeId, "Supervisor");
+            }
+            
+        }
+        
+        public async Task Update(Guid id, CreateProjectDTO createProjectDto)
+        {
+            var project = await _repository.GetSingleAsync(s => s.Id == id);
+    
+            project.Name = createProjectDto.Name;
+            project.Description = createProjectDto.Description;
+
+            project.Employee = new List<Employee>(); 
+            project.Tasks = new List<Domain.Entities.Tasks.Task>();
+            project.ProjectResources = new List<Domain.Entities.ProjectResources.ProjectResource>();
+
+            
+            await _repository.UpdateAsync(project);
+            
+            if (Guid.TryParse(createProjectDto.EmployeeId.ToString(), out Guid employeeId))
+            {
+                _managementService.ManageRoleAssignment(employeeId, "Supervisor");
+            }
+
         }
         
         public async Task<Project?> GetById(Guid id)

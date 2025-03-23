@@ -9,7 +9,5 @@
         public int WorkedHours { get; set; }
         public DateTime? StartDate { get; set; } = null!;
         public DateTime? EndTime { get; set; } = null!;
-
-
     }
 }
