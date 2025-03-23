@@ -21,7 +21,7 @@ namespace Rush.Application.Services.AuditLogs
             _mapper = mapper;
         }
 
-        public async Task<ResponseHelper> GetAuditLogs(int level, int httpMethod, int offset, int pageSize)
+        public async Task<ResponseHelper> GetAuditLogs(int? level, int? httpMethod, int offset, int pageSize)
         {
 
 

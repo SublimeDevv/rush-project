@@ -12,8 +12,13 @@ namespace Rush.WebAPI.Controllers.AuditLogs
     {
         private readonly IAuditLogService _service = service;
 
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         [Route("/getLogs")]
-        public async Task GetLogs(int level = 0, int httpMethod = 0, int offset = 0, int pageSize = 10)
+        public async Task GetLogs([FromQuery] int? level = null, [FromQuery] int? httpMethod = null, int offset = 0, int pageSize = 1000)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
@@ -21,7 +26,7 @@ namespace Rush.WebAPI.Controllers.AuditLogs
                 while (webSocket.State == WebSocketState.Open)
                 {
                     var data = await _service.GetAuditLogs(level, httpMethod, offset, pageSize);
-                    var json = JsonSerializer.Serialize(data);
+                    var json = JsonSerializer.Serialize(data, _jsonOptions);
 
                     await webSocket.SendAsync(
                         Encoding.UTF8.GetBytes(json),
@@ -30,7 +35,7 @@ namespace Rush.WebAPI.Controllers.AuditLogs
                         CancellationToken.None
                     );
 
-                    await Task.Delay(5000);
+                    await Task.Delay(1000);
                 }
             }
             else
@@ -48,14 +53,14 @@ namespace Rush.WebAPI.Controllers.AuditLogs
                 while (webSocket.State == WebSocketState.Open)
                 {
                     var data = await _service.GetCountLogs(level, httpMethod);
-                    var json = JsonSerializer.Serialize(data);
+                    var json = JsonSerializer.Serialize(data, _jsonOptions);
                     await webSocket.SendAsync(
                         Encoding.UTF8.GetBytes(json),
                         WebSocketMessageType.Text,
                         true,
                         CancellationToken.None
                     );
-                    await Task.Delay(5000);
+                    await Task.Delay(1000);
                 }
             }
             else
@@ -73,14 +78,14 @@ namespace Rush.WebAPI.Controllers.AuditLogs
                 while (webSocket.State == WebSocketState.Open)
                 {
                     var data = await _service.GetAuditEntities();
-                    var json = JsonSerializer.Serialize(data);
+                    var json = JsonSerializer.Serialize(data, _jsonOptions);
                     await webSocket.SendAsync(
                         Encoding.UTF8.GetBytes(json),
                         WebSocketMessageType.Text,
                         true,
                         CancellationToken.None
                     );
-                    await Task.Delay(5000);
+                    await Task.Delay(1000);
                 }
             }
             else
@@ -98,14 +103,14 @@ namespace Rush.WebAPI.Controllers.AuditLogs
                 while (webSocket.State == WebSocketState.Open)
                 {
                     var data = await _service.GetAuditLogsCount();
-                    var json = JsonSerializer.Serialize(data);
+                    var json = JsonSerializer.Serialize(data, _jsonOptions);
                     await webSocket.SendAsync(
                         Encoding.UTF8.GetBytes(json),
                         WebSocketMessageType.Text,
                         true,
                         CancellationToken.None
                     );
-                    await Task.Delay(5000);
+                    await Task.Delay(1000);
                 }
             }
             else
