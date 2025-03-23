@@ -33,5 +33,12 @@ namespace Rush.WebAPI.Controllers.AuditLogs
             return Ok(result);
         }
 
+        [HttpGet("GetAuditLogsCount")]
+        public async Task<IActionResult> GetAuditLogsCount()
+        {
+            var result = await _service.GetAuditLogsCount();
+            return Ok(result);
+        }
+
     }
 }
