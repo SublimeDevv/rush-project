@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Auth;
 using Rush.Domain.Common.ViewModels.Auth;
@@ -32,7 +30,7 @@ namespace Rush.WebAPI.Controllers.Auth
 
             if (response.Success)
             {
-                SetTokenCookie("access_token", getToken.AccessToken, 15);
+                SetTokenCookie("access_token", getToken.AccessToken, 60 * 24 * 7);
                 SetTokenCookie("refresh_token", getToken.RefreshToken, 60 * 24 * 7);
             }
 
@@ -60,7 +58,7 @@ namespace Rush.WebAPI.Controllers.Auth
                 return BadRequest(responseRefresh);
             }
 
-            SetTokenCookie("access_token", tokenResponse.AccessToken, 30); 
+            SetTokenCookie("access_token", tokenResponse.AccessToken, 40); 
             SetTokenCookie("refresh_token", tokenResponse.RefreshToken, 60 * 24 * 7);
 
             return Ok(responseRefresh);
@@ -70,11 +68,6 @@ namespace Rush.WebAPI.Controllers.Auth
         public IActionResult Logout()
         {
             ResponseHelper response = new() { Success = true, Message = "Logout exitoso" };
-
-            if (!HttpContext.Request.Cookies.TryGetValue("access_token", out var accessToken))
-            {
-                return BadRequest("Error: No se encontró el token de acceso.");
-            }
 
             if (!HttpContext.Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
             {

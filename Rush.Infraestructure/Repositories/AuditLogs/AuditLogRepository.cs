@@ -17,7 +17,7 @@ namespace Rush.Infraestructure.Repositories.AuditLogs
             _context = context;
         }
 
-        public async Task<List<AuditLogsVM>> GetAuditLogs(int level, int httpMethod, int offset, int pageSize)
+        public async Task<List<AuditLogsVM>> GetAuditLogs(int? level, int? httpMethod, int offset, int pageSize)
         {
             string sql = @"SELECT al.*, asp.Email AS UserEmail
                 FROM Tbl_AuditLogs AS al
@@ -26,7 +26,7 @@ namespace Rush.Infraestructure.Repositories.AuditLogs
 
                   AND (@Level IS NULL OR al.Level = @Level)
                   AND (@HttpMethod IS NULL OR al.HttpMethod = @HttpMethod)
-                ORDER BY al.Id DESC
+                ORDER BY al.timeStamp DESC
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
             var result = await _context.Database.GetDbConnection().QueryAsync<AuditLogsVM>(sql, new { Level = level, HttpMethod = httpMethod, Offset = offset, PageSize = pageSize });

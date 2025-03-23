@@ -13,7 +13,7 @@ namespace Rush.WebAPI.Controllers.AuditLogs
         private readonly IAuditLogService _service = service;
 
         [HttpGet("GetAuditLogs")]
-        public async Task<IActionResult> GetAuditLogs(int level = 0, int httpMethod = 0, int offset = 0, int pageSize = 10)
+        public async Task<IActionResult> GetAuditLogs([FromQuery] int? level = null, [FromQuery] int? httpMethod = null, int offset = 0, int pageSize = 10)
         {
             var result = await _service.GetAuditLogs(level, httpMethod, offset, pageSize);
             return Ok(result);
