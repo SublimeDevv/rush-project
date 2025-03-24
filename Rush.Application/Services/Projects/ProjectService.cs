@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Rush.Application.Interfaces.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
@@ -19,12 +20,15 @@ namespace Rush.Application.Services.Projects
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmployeeManagementService _managementService;
         private readonly IMapper _mapper;
-        public ProjectService(IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService, UserManager<ApplicationUser> userManager) : base(mapper, repository)
+        private readonly IConfigurationService _configurationService;
+
+        public ProjectService(UserManager<ApplicationUser> userManager, IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _managementService = managementService;
             _userManager = userManager;
             _repository = repository;
+            _configurationService = configurationService;
         }
         
         public async Task<ResponseHelper> GetAll()

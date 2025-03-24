@@ -5,6 +5,7 @@ using Rush.Application.Interfaces.Activities;
 using Rush.Application.Interfaces.Admin;
 using Rush.Application.Interfaces.AuditLogs;
 using Rush.Application.Interfaces.Auth;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.ProjectResources;
 using Rush.Application.Interfaces.Projects;
@@ -14,12 +15,14 @@ using Rush.Application.Services.Activities;
 using Rush.Application.Services.Admin;
 using Rush.Application.Services.AuditLogs;
 using Rush.Application.Services.Auth;
+using Rush.Application.Services.Configurations;
 using Rush.Application.Services.Employees;
 using Rush.Application.Services.ProjectResources;
 using Rush.Application.Services.Projects;
 using Rush.Application.Services.Resources;
 using Rush.Application.Services.Seeders;
 using Rush.Application.Services.Tasks;
+using Rush.Application.Services.Webhook;
 using System.Security.Claims;
 
 namespace Rush.Application;
@@ -42,6 +45,9 @@ public static class DependencyInjection
         services.AddScoped<IResourceService, ResourceService>();
         services.AddScoped<IEmployeeManagementService, EmployeeService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddScoped<IConfigurationService, ConfigurationService>();
+        services.AddScoped<DiscordWebhookService>();
+        services.AddHttpClient<DiscordWebhookService>();
         services.AddHttpContextAccessor();
         services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
         services.AddTransient(s =>

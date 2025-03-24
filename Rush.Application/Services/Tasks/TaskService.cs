@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Tasks;
 using Rush.Application.Services.Base;
 using Rush.Domain.Common.ViewModels.Resources;
@@ -16,10 +17,13 @@ namespace Rush.Application.Services.Tasks
     {
         private readonly ITaskRepository _repository;
         private readonly IMapper _mapper;
-        public TaskService(ITaskRepository repository, IMapper mapper) : base(mapper, repository)
+        private readonly IConfigurationService _configurationService;
+
+        public TaskService(ITaskRepository repository, IMapper mapper, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _repository = repository;
+            _configurationService = configurationService;
         }
 
         public async Task<ResponseHelper> GetAllTaskFromProject(Guid ProjectId)

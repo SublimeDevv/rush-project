@@ -3,7 +3,7 @@ using Rush.Infraestructure;
 using Rush.WebAPI;
 using Serilog;
 using Rush.Application;
-using Microsoft.AspNetCore.WebSockets;
+using Rush.Application.Interfaces.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +31,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var configService = scope.ServiceProvider.GetRequiredService<IConfigurationService>();
+    configService.EnsureConfigExists();
 }
 
 app.UseStaticFiles(new StaticFileOptions

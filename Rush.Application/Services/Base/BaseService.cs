@@ -7,7 +7,8 @@ using Rush.Application.Extensions;
 using Serilog;
 using Rush.Application.Interfaces.Base;
 using System.Text.Json;
-using Rush.Infraestructure.Services.Webhook;
+using Rush.Application.Services.Webhook;
+using Rush.Application.Interfaces.Configurations;
 
 namespace Rush.Application.Services.Base
 {
@@ -15,10 +16,12 @@ namespace Rush.Application.Services.Base
     {
         private readonly IMapper _mapper;
         private readonly IBaseRepository<T> _repository;
+        private readonly IConfigurationService _configurationService;
 
-        public ServiceBase(IMapper mapper, IBaseRepository<T> baseRepository)
+        public ServiceBase(IMapper mapper, IBaseRepository<T> baseRepository, IConfigurationService configurationService)
         {
             _mapper = mapper;
+            _configurationService = configurationService;
             _repository = baseRepository;
         }
 
@@ -26,7 +29,14 @@ namespace Rush.Application.Services.Base
         {
             var discordWebhookService = new DiscordWebhookService(new HttpClient());
 
-            string webhookUrl = "https://discord.com/api/webhooks/1310681662241116252/hxqSonblRdIENS2YveIWt8JmKHbE8u63AKwtaapGLGNMBTBPtm7v-jtzi3NKQY812Kii";
+            var config = await _configurationService.GetDiscordToken();
+
+            string? webhookUrl = config.Data?.ToString();
+
+            if (string.IsNullOrWhiteSpace(webhookUrl))
+            {
+                return;
+            }
 
             string formattedMessage = $"```json\n{message}\n```";
 
@@ -37,10 +47,42 @@ namespace Rush.Application.Services.Base
         private async Task LogsGeneric(string message)
         {
             var discordWebhookService = new DiscordWebhookService(new HttpClient());
+            var config = await _configurationService.GetDiscordToken();
 
-            string webhookUrl = "https://discord.com/api/webhooks/1310677224197853336/4Ysk48FlYihkS80xyzzZbkqsQs6jLh7TAvmkQYuOSeUwdAnzkhVMvr_kw_Ww4eucGh2s";
+            string? webhookUrl = config.Data?.ToString();
+
+            if (string.IsNullOrWhiteSpace(webhookUrl))
+            {
+                return;
+            }
+
             string formattedMessage = $"```json\n{message}\n```";
             await discordWebhookService.SendMessageAsync(webhookUrl, formattedMessage);
+        }
+
+        private async Task SlackLog(string message)
+        {
+            var slackWebhookService = new SlackWebhookService(new HttpClient());
+            var config = await _configurationService.GetSlackToken();
+            string? webhookUrl = config.Data?.ToString();
+            if (string.IsNullOrWhiteSpace(webhookUrl))
+            {
+                return;
+            }
+            await slackWebhookService.SendMessageAsync(webhookUrl, message);
+        }
+
+        private async Task SlackGenericLog(string message)
+        {
+            var slackWebhookService = new SlackWebhookService(new HttpClient());
+            var config = await _configurationService.GetSlackToken();
+            string? webhookUrl = config.Data?.ToString();
+            if (string.IsNullOrWhiteSpace(webhookUrl))
+            {
+                return;
+            }
+            await slackWebhookService.SendMessageAsync(webhookUrl, message);
+
         }
 
         public async Task<ResponseHelper> GetAllAsync(Expression<Func<T, bool>>? filter = null)
@@ -55,10 +97,12 @@ namespace Rush.Application.Services.Base
 
                 string dataAsJson = JsonSerializer.Serialize(response.Data);
                 await LogsCrud(dataAsJson);
+                await SlackLog(dataAsJson);
             }
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }
@@ -83,6 +127,7 @@ namespace Rush.Application.Services.Base
 
                     string dataAsJson = JsonSerializer.Serialize(response.Data);
                     await LogsCrud(dataAsJson);
+                    await SlackLog(dataAsJson);
 
                     Log.Information(response.Message);
 
@@ -98,6 +143,7 @@ namespace Rush.Application.Services.Base
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }
@@ -119,6 +165,7 @@ namespace Rush.Application.Services.Base
 
                     string dataAsJson = JsonSerializer.Serialize(response.Data);
                     await LogsCrud(dataAsJson);
+                    await SlackLog(dataAsJson);
 
                     Log.Information(response.Message);
                 }
@@ -126,6 +173,7 @@ namespace Rush.Application.Services.Base
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }
@@ -149,6 +197,7 @@ namespace Rush.Application.Services.Base
                     
                     string dataAsJson = JsonSerializer.Serialize(response.Data);
                     await LogsCrud(dataAsJson);
+                    await SlackLog(dataAsJson);
 
                     Log.Information(response.Message);
                 }
@@ -156,6 +205,7 @@ namespace Rush.Application.Services.Base
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }
@@ -180,6 +230,7 @@ namespace Rush.Application.Services.Base
 
                     string dataAsJson = JsonSerializer.Serialize(response.Data);
                     await LogsCrud(dataAsJson);
+                    await SlackLog(dataAsJson);
 
                     Log.Information(response.Message);
                 }
@@ -187,6 +238,7 @@ namespace Rush.Application.Services.Base
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }
@@ -206,11 +258,13 @@ namespace Rush.Application.Services.Base
 
                 string dataAsJson = JsonSerializer.Serialize(response.Data);
                 await LogsCrud(dataAsJson);
+                await SlackLog(dataAsJson);
 
             }
             catch (Exception e)
             {
                 await LogsGeneric(e.Message);
+                await SlackGenericLog(e.Message);
                 Log.Error(e.Message);
                 response.Message = e.Message;
             }

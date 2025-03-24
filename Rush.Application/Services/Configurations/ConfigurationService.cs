@@ -11,6 +11,7 @@ namespace Rush.Application.Services.Configurations
     class ConfigurationService(ApplicationDbContext context): IConfigurationService
     {
         private readonly ApplicationDbContext _context = context;
+
         public async Task<ResponseHelper> GetDiscordToken()
         {
             ResponseHelper response = new();

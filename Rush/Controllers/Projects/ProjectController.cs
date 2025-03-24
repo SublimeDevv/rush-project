@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
+using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
 using Rush.Domain.Common.Util;
 using Rush.Domain.Common.ViewModels.Util;
@@ -17,10 +18,12 @@ namespace Rush.WebAPI.Controllers.Projects
     public class ProjectController: BaseController<Project, ProjectDTO>
     {
         private readonly IProjectService _service;
-        public ProjectController(IProjectService service)
+        private readonly IEmployeeService _employeeService;
+        public ProjectController(IProjectService service, IEmployeeService employeeService)
              : base(service)
         {
             _service = service;
+            _employeeService = employeeService;
         }
 
         [HttpGet("GetAllStatus")]
@@ -54,6 +57,20 @@ namespace Rush.WebAPI.Controllers.Projects
 
             return Ok(await _service.GetAllForEmployee(userValidator.GetUserId()));
         }
+        
+        [HttpGet("GetByUser")]
+        public async Task<IActionResult> GetByUser()
+        {
+            
+            UserClaimsValidator userValidator = new UserClaimsValidator(User);
+            
+            var employee = await  _employeeService.GetEmployeeByUserId(userValidator.GetUserId());
+            
+            return Ok(
+                await _service.GetById( employee.ProjectId.Value , userValidator.GetUserId())
+            );      
+            
+        }            
         
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetByIdM(Guid id)
