@@ -69,7 +69,7 @@ namespace Rush.Application.Services.Base
             {
                 return;
             }
-            await slackWebhookService.SendMessageAsync(webhookUrl, LogFormatter.FormatAsChatMessage(message));
+            await slackWebhookService.SendMessageAsync(webhookUrl, message);
         }
 
         private async Task SlackGenericLog(string message)
@@ -81,7 +81,7 @@ namespace Rush.Application.Services.Base
             {
                 return;
             }
-            await slackWebhookService.SendMessageAsync(webhookUrl, LogFormatter.FormatAsChatMessage(message));
+            await slackWebhookService.SendMessageAsync(webhookUrl, message);
 
         }
 
