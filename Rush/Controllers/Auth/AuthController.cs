@@ -88,7 +88,7 @@ namespace Rush.WebAPI.Controllers.Auth
                 var user = await _userManager.GetUserAsync(User);
 
                 if (user == null)
-                    return Ok(new ResponseHelper // Es Ok porque sino tira puro error el front en la consola
+                    return Unauthorized(new ResponseHelper
                     {
                         Success = false,
                         Message = "Sesión no válida"
