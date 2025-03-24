@@ -18,6 +18,13 @@ namespace Rush.WebAPI.Controllers.Employees
             _service = service;
         }
 
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllMin()
+        {
+            var list = await _service.GetAllEmployees();
+            return Ok(list);
+        }        
+        
         [HttpGet("GetAllWithoutProject")]
         public async Task<IActionResult> GetAllWithoutProject()
         {

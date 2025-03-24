@@ -19,6 +19,30 @@ namespace Rush.Infraestructure.Repositories.Projects
             _context = context;
         }
 
+        public async Task<List<Project>> GetAllYes()
+        {
+            var projects = await _context.Projects
+                .Include(p => p.Employee) 
+                .Select(p => new Project() 
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    StartDate = p.StartDate,
+                    EndTime = p.EndTime,
+                    Employee = p.Employee.Select(e => new Employee()
+                    {
+                        Id = e.Id,
+                        Name = e.Name,
+                        LastName = e.LastName,
+                        ProjectId = e.ProjectId,
+                        UserId = e.UserId
+                    }).ToList(),
+                })
+                .ToListAsync();
+
+            return projects;
+        }
         public async Task<List<Project>> GetAllForEmployee(Guid employeeId)
         {
             var projects = await _context.Projects

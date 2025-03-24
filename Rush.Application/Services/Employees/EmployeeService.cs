@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rush.Application.Interfaces.Employees;
@@ -12,6 +13,7 @@ using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.Projects;
 using Rush.Domain.Entities.Resources;
 using Rush.Infraestructure.Interfaces.Employees;
+using Serilog;
 using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Application.Services.Employees
@@ -28,7 +30,39 @@ namespace Rush.Application.Services.Employees
             _userManager = userManager;
             _repository = repository;
         }
+        
+        
+        public async Task<ResponseHelper> GetAllEmployees()
+        {
+            ResponseHelper response = new ResponseHelper();
+            try
+            {
+                var data = await _repository.GetAllAsync();
 
+                response.Success = true;
+
+                var list = new List<object>();
+
+                foreach (var x in data)
+                {
+                    var user = await _userManager.FindByIdAsync(x.UserId.ToString());
+                    var roles = await _userManager.GetRolesAsync(user);
+    
+                    list.Add(new { x, Roles = roles });
+                }
+                
+                response.Data = list;
+                
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                response.Message = e.Message;
+            }
+
+            return response;
+        }
+        
         public async Task RemoveProject(Guid employeeId, string? role)
         {
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
@@ -48,6 +82,7 @@ namespace Rush.Application.Services.Employees
         public async Task AssignProject(Guid employeeId, Guid projectId, string? role)
         {
             //these i have two queries the firstone is for the model and the second one is to get the userId
+            
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
             
             if (employee == null)

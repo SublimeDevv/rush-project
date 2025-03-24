@@ -2,6 +2,7 @@
 using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Rush.Application.Interfaces.Projects;
+using Rush.Domain.Common.Util;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Project;
 using Rush.Domain.Entities.Employees;
@@ -22,7 +23,22 @@ namespace Rush.WebAPI.Controllers.Projects
             _service = service;
         }
 
+        [HttpGet("GetAllStatus")]
+        public async Task<IActionResult> GetStatus()
+        {
+            ResponseHelper responseHelper = new ResponseHelper();
 
+            string[][] roles = Enum.GetValues(typeof(Enums.Roles))
+                .Cast<Enums.Roles>()
+                .Select(r => new string[] { ((int)r).ToString(), r.ToString() })
+                .ToArray();
+            
+            responseHelper.Data = roles;
+            responseHelper.Success = true;
+            
+            return Ok(responseHelper); 
+        }
+        
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllM()
         {
@@ -32,25 +48,11 @@ namespace Rush.WebAPI.Controllers.Projects
             {
                 var list = await _service.GetAll();
                 
-                return Ok(
-                    new ResponseHelper()
-                    {
-                        Success = true,
-                        Message = "Correctamente bien ejecutado",
-                        Data = list.OrderBy(c => c.Name)
-                    }
+                return Ok(list
                 );      
             }
 
-            return Ok(
-                new ResponseHelper()
-                {
-                    Success = true,
-                    Message = "Correctamente",
-                    Data = await _service.GetAllForEmployee(userValidator.GetUserId()
-                    
-                    )
-                });
+            return Ok(await _service.GetAllForEmployee(userValidator.GetUserId()));
         }
         
         [HttpGet("GetById/{id}")]
@@ -62,22 +64,12 @@ namespace Rush.WebAPI.Controllers.Projects
             if (userValidator.CheckForRole(["Gerente", "Admin", "Supervisor"]))
             {
                 return Ok(
-                    new ResponseHelper()
-                    {
-                        Success = true,
-                        Message = "Correctamente bien ejecutado",
-                        Data = await _service.GetById(id)
-                    }
+                    await _service.GetById(id)
                 );      
             }
 
             return Ok(
-                new ResponseHelper()
-                {
-                    Success = true,
-                    Message = "Correctamente bien ejecutado",
-                    Data = await _service.GetById(id, userValidator.GetUserId())
-                }
+                 await _service.GetById(id, userValidator.GetUserId())
             );      
             
         }

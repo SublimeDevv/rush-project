@@ -11,6 +11,7 @@ namespace Rush.Application.Interfaces.Employees
 
         public Task RemoveProject(Guid employeeId, string? role);
         public Task<ResponseHelper> GetEmployeeDataDashboard(Guid EmployeeId);
+        public Task<ResponseHelper> GetAllEmployees();
         public Task<ResponseHelper> GetEmployeeData(Guid userId);
         public Task<ResponseHelper> GetEmployeeProject(Guid employeeId);
         public Task<ResponseHelper> GetEmployeesFromProject(Guid projectId);
