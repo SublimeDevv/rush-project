@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Rush.Application.Interfaces.AuditLogs;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Services.Base;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.AuditLogs;
@@ -14,11 +15,13 @@ namespace Rush.Application.Services.AuditLogs
 
         private readonly IMapper _mapper;
         private readonly IAuditLogRepository _repository;
+        private readonly IConfigurationService _configurationService;
 
-        public AuditLogService(IAuditLogRepository repository, IMapper mapper) : base(mapper, repository)
+        public AuditLogService(IAuditLogRepository repository, IMapper mapper, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _repository = repository;
             _mapper = mapper;
+            _configurationService = configurationService;
         }
 
         public async Task<ResponseHelper> GetAuditLogs(int? level, int? httpMethod, int offset, int pageSize)

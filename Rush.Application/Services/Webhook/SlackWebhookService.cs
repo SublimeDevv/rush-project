@@ -1,15 +1,10 @@
 ﻿using System.Text.Json;
 
-namespace Rush.Infraestructure.Services.Webhook
+namespace Rush.Application.Services.Webhook
 {
-    public class DiscordWebhookService
+    public class SlackWebhookService(HttpClient httpClient)
     {
-        private readonly HttpClient _httpClient;
-
-        public DiscordWebhookService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        private readonly HttpClient _httpClient = httpClient;
 
         public async Task SendMessageAsync(string webhookUrl, string message)
         {
@@ -20,7 +15,7 @@ namespace Rush.Infraestructure.Services.Webhook
 
             var payload = new
             {
-                content = message 
+                text = message
             };
 
             var jsonPayload = JsonSerializer.Serialize(payload);
@@ -35,7 +30,7 @@ namespace Rush.Infraestructure.Services.Webhook
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
-                //throw new HttpRequestException($"Error al enviar el mensaje a Discord: {response.StatusCode}. Detalle: {errorMessage}");
+                
             }
         }
     }

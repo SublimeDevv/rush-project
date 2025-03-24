@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.ProjectResources;
 using Rush.Application.Services.Base;
 using Rush.Domain.DTO.ProjectResources;
@@ -12,10 +13,12 @@ namespace Rush.Application.Services.ProjectResources
     {
         private readonly IProjectResourceRepository _repository;
         private readonly IMapper _mapper;
-        public ProjectResourceService(IProjectResourceRepository repository, IMapper mapper) : base(mapper, repository)
+        private readonly IConfigurationService _configurationService;
+        public ProjectResourceService(IProjectResourceRepository repository, IMapper mapper, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _repository = repository;
+            _configurationService = configurationService;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Rush.Application.Interfaces.Activities;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Services.Base;
 using Rush.Domain.Common.ViewModels.Activities;
 using Rush.Domain.Common.ViewModels.Tasks;
@@ -14,11 +15,13 @@ namespace Rush.Application.Services.Activities
     {
         private readonly IMapper _mapper;
         private readonly IActivityRepository _repository;
+        private readonly IConfigurationService _configurationService;
 
-        public ActivityService(IActivityRepository repository, IMapper mapper) : base(mapper, repository)
+        public ActivityService(IActivityRepository repository, IMapper mapper, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _repository = repository;
+            _configurationService = configurationService;
         }
 
         public async Task<ResponseHelper> GetEmployeeActivities(Guid EmployeeId)

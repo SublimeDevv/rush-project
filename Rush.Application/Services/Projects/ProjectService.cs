@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
 using Rush.Application.Services.Base;
@@ -14,11 +15,14 @@ namespace Rush.Application.Services.Projects
         private readonly IProjectRepository _repository;
         private readonly IEmployeeManagementService _managementService;
         private readonly IMapper _mapper;
-        public ProjectService(IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService) : base(mapper, repository)
+        private readonly IConfigurationService _configurationService;
+
+        public ProjectService(IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _managementService = managementService;
             _repository = repository;
+            _configurationService = configurationService;
         }
         
         public async Task<List<Project?>> GetAllForEmployee(Guid employeeId)

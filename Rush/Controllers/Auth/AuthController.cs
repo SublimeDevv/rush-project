@@ -58,7 +58,7 @@ namespace Rush.WebAPI.Controllers.Auth
                 return BadRequest(responseRefresh);
             }
 
-            SetTokenCookie("access_token", tokenResponse.AccessToken, 40); 
+            SetTokenCookie("access_token", tokenResponse.AccessToken, 60 * 24 * 7); 
             SetTokenCookie("refresh_token", tokenResponse.RefreshToken, 60 * 24 * 7);
 
             return Ok(responseRefresh);

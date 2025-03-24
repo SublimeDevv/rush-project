@@ -27,7 +27,6 @@ using Rush.Infraestructure.Repositories.ProjectResources;
 using Rush.Infraestructure.Repositories.Projects;
 using Rush.Infraestructure.Repositories.Resources;
 using Rush.Infraestructure.Repositories.Tasks;
-using Rush.Infraestructure.Services.Webhook;
 
 namespace Rush.Infraestructure;
 
@@ -93,20 +92,11 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
                 
-        AddServices(services);
         AddRepository(services);
         
         return services;
     }
-    
-    /// <summary>
-    /// Adds the services.
-    /// </summary>
-    /// <param name="services">The services.</param>
-    private static void AddServices(IServiceCollection services)
-    {
-        services.AddHttpClient<DiscordWebhookService>();
-    }
+   
 
     /// <summary>
     /// Adds the repository.

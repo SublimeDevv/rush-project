@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Services.Base;
 using Rush.Domain.Common.ViewModels.Employees;
@@ -16,18 +17,12 @@ using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Application.Services.Employees
 {
-    public class EmployeeService : ServiceBase<Employee, EmployeeDTO>, IEmployeeService, IEmployeeManagementService
+    public class EmployeeService(IEmployeeRepository repository, IMapper mapper, UserManager<ApplicationUser> userManager, IConfigurationService configurationService) : ServiceBase<Employee, EmployeeDTO>(mapper, repository, configurationService), IEmployeeService, IEmployeeManagementService
     {
-        private readonly IEmployeeRepository _repository;
-        private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public EmployeeService(IEmployeeRepository repository, IMapper mapper, UserManager<ApplicationUser> userManager) : base(mapper, repository)
-        {
-            _mapper = mapper;
-            _userManager = userManager;
-            _repository = repository;
-        }
+        private readonly IEmployeeRepository _repository = repository;
+        private readonly IMapper _mapper = mapper;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly IConfigurationService _configurationService = configurationService;
 
         public async Task RemoveProject(Guid employeeId, string? role)
         {
