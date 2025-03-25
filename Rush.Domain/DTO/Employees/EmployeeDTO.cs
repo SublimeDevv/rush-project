@@ -10,7 +10,7 @@ namespace Rush.Domain.DTO.Employees
         public string Curp { get; set; }
         public string Rfc { get; set; }
         public string Salary { get; set; }
-        public string UserId { get; set; }
+        public Guid? UserId { get; set; }
         public Sexo Sexo { get; set; }
         public Guid? ProjectId { get; set; }
         
@@ -22,6 +22,12 @@ namespace Rush.Domain.DTO.Employees
     public Guid EmployeeId { get; set; }
     public Guid ProjectId { get; set; }
     public string? Role { get; set; } = "Empleado";
+    }
+
+    public class EmployeeDTOForProjectRemoval
+    {
+        public Guid EmployeeId { get; set; }
+        public string? Role { get; set; } = "Empleado";
     }
 
 }

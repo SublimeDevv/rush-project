@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Azure;
 using Microsoft.AspNetCore.Mvc;
+using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
+using Rush.Domain.Common.Util;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Project;
 using Rush.Domain.Entities.Employees;
@@ -16,13 +18,30 @@ namespace Rush.WebAPI.Controllers.Projects
     public class ProjectController: BaseController<Project, ProjectDTO>
     {
         private readonly IProjectService _service;
-        public ProjectController(IProjectService service)
+        private readonly IEmployeeService _employeeService;
+        public ProjectController(IProjectService service, IEmployeeService employeeService)
              : base(service)
         {
             _service = service;
+            _employeeService = employeeService;
         }
 
+        [HttpGet("GetAllStatus")]
+        public async Task<IActionResult> GetStatus()
+        {
+            ResponseHelper responseHelper = new ResponseHelper();
 
+            string[][] roles = Enum.GetValues(typeof(Enums.Roles))
+                .Cast<Enums.Roles>()
+                .Select(r => new string[] { ((int)r).ToString(), r.ToString() })
+                .ToArray();
+            
+            responseHelper.Data = roles;
+            responseHelper.Success = true;
+            
+            return Ok(responseHelper); 
+        }
+        
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllM()
         {
@@ -30,26 +49,28 @@ namespace Rush.WebAPI.Controllers.Projects
             
             if (userValidator.CheckForRole(["Gerente", "Admin"]))
             {
-                return Ok(
-                    new ResponseHelper()
-                    {
-                        Success = true,
-                        Message = "Correctamente bien ejecutado",
-                        Data = await _service.GetAllAsync()
-                    }
+                var list = await _service.GetAll();
+                
+                return Ok(list
                 );      
             }
 
-            return Ok(
-                new ResponseHelper()
-                {
-                    Success = true,
-                    Message = "Correctamente",
-                    Data = await _service.GetAllForEmployee(userValidator.GetUserId()
-                    
-                    )
-                });
+            return Ok(await _service.GetAllForEmployee(userValidator.GetUserId()));
         }
+        
+        [HttpGet("GetByUser")]
+        public async Task<IActionResult> GetByUser()
+        {
+            
+            UserClaimsValidator userValidator = new UserClaimsValidator(User);
+            
+            var employee = await  _employeeService.GetEmployeeByUserId(userValidator.GetUserId());
+            
+            return Ok(
+                await _service.GetById( employee.ProjectId.Value , userValidator.GetUserId())
+            );      
+            
+        }            
         
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetByIdM(Guid id)
@@ -60,22 +81,12 @@ namespace Rush.WebAPI.Controllers.Projects
             if (userValidator.CheckForRole(["Gerente", "Admin", "Supervisor"]))
             {
                 return Ok(
-                    new ResponseHelper()
-                    {
-                        Success = true,
-                        Message = "Correctamente bien ejecutado",
-                        Data = await _service.GetById(id)
-                    }
+                    await _service.GetById(id)
                 );      
             }
 
             return Ok(
-                new ResponseHelper()
-                {
-                    Success = true,
-                    Message = "Correctamente bien ejecutado",
-                    Data = await _service.GetById(id, userValidator.GetUserId())
-                }
+                 await _service.GetById(id, userValidator.GetUserId())
             );      
             
         }
@@ -84,6 +95,19 @@ namespace Rush.WebAPI.Controllers.Projects
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectDTO projectDto)
         {
             await _service.Create(projectDto);
+            
+            return Ok(new ResponseHelper()
+            {
+                Success = true,
+                Message ="Proyecto creado"
+            });
+        }
+        
+        [HttpPut("UpdateProject/{id}")]
+        public async Task<IActionResult> UpdateProject(Guid id, [FromBody] CreateProjectDTO projectDto)
+        {
+            
+            await _service.Update(id, projectDto);
             
             return Ok(new ResponseHelper()
             {

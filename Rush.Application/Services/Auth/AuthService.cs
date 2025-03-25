@@ -106,6 +106,7 @@ namespace Rush.Application.Services.Auth
                         if (registerEmployee != Guid.Empty)
                         {
                             response.Message = "Empleado registrado correctamente";
+                            response.Data = createEmployee;
                             response.Success = true;
                         }
                     }
