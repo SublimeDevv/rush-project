@@ -18,8 +18,22 @@ namespace Rush.WebAPI.Controllers.Employees
             _service = service;
         }
 
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllMin()
+        {
+            var list = await _service.GetAllEmployees();
+            return Ok(list);
+        }        
+        
+        [HttpGet("GetAllWithoutProject")]
+        public async Task<IActionResult> GetAllWithoutProject()
+        {
+            var list = await _service.GetAllAsync(s => s.ProjectId == null);
+            return Ok(list);
+        }
+        
         [HttpPost("AssignProject")]
-        public async Task<IActionResult> AssignProject([FromQuery] EmployeeDTOForProject employeeDto)
+        public async Task<IActionResult> AssignProject([FromBody] EmployeeDTOForProject employeeDto)
         {
             await _service.AssignProject(employeeDto.EmployeeId, employeeDto.ProjectId, employeeDto.Role);
             
@@ -27,7 +41,7 @@ namespace Rush.WebAPI.Controllers.Employees
         }
 
         [HttpPost("RemoveProject")]
-        public async Task<IActionResult> RemoveProject([FromQuery] EmployeeDTOForProject employeeDto)
+        public async Task<IActionResult> RemoveProject([FromBody] EmployeeDTOForProjectRemoval employeeDto)
         {
             await _service.RemoveProject(employeeDto.EmployeeId, employeeDto.Role);
 

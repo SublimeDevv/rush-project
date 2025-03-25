@@ -1,6 +1,8 @@
-﻿using AutoMapper;
+﻿using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Configurations;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Services.Base;
@@ -13,17 +15,50 @@ using Rush.Domain.Entities.Employees;
 using Rush.Domain.Entities.Projects;
 using Rush.Domain.Entities.Resources;
 using Rush.Infraestructure.Interfaces.Employees;
+using Serilog;
 using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Application.Services.Employees
 {
     public class EmployeeService(IEmployeeRepository repository, IMapper mapper, UserManager<ApplicationUser> userManager, IConfigurationService configurationService) : ServiceBase<Employee, EmployeeDTO>(mapper, repository, configurationService), IEmployeeService, IEmployeeManagementService
     {
+        
         private readonly IEmployeeRepository _repository = repository;
         private readonly IMapper _mapper = mapper;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IConfigurationService _configurationService = configurationService;
+        
+        public async Task<ResponseHelper> GetAllEmployees()
+        {
+            ResponseHelper response = new ResponseHelper();
+            try
+            {
+                var data = await _repository.GetAllAsync();
 
+                response.Success = true;
+
+                var list = new List<object>();
+
+                foreach (var x in data)
+                {
+                    var user = await _userManager.FindByIdAsync(x.UserId.ToString());
+                    var roles = await _userManager.GetRolesAsync(user);
+    
+                    list.Add(new { x, Roles = roles });
+                }
+                
+                response.Data = list;
+                
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                response.Message = e.Message;
+            }
+
+            return response;
+        }
+        
         public async Task RemoveProject(Guid employeeId, string? role)
         {
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
@@ -38,11 +73,17 @@ namespace Rush.Application.Services.Employees
             }
                 
         }
-        
-        
+
+
+        public Task<Employee?> GetEmployeeByUserId(Guid UserId)
+        {
+            return _repository.GetSingleAsync(x => x.UserId == UserId.ToString());
+        }
+
         public async Task AssignProject(Guid employeeId, Guid projectId, string? role)
         {
             //these i have two queries the firstone is for the model and the second one is to get the userId
+            
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
             
             if (employee == null)
