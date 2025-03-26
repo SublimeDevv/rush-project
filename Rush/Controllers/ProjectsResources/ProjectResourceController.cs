@@ -16,13 +16,6 @@ namespace Rush.WebAPI.Controllers.ProjectsResources
         {
             _service = service;
         }
-        
-        
-        [HttpPost("PostNewProjectResource")]
-        public async Task<IActionResult> GetProjectResources(Guid projectId, Guid resourceId, int Quantity)
-        {
-            return await _service.GetProjectResources(projectId, resourceId);
-        }
 
     }
 }

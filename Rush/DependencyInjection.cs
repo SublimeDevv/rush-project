@@ -29,7 +29,7 @@ namespace Rush.WebAPI
             {
                 options.AddPolicy("VueFrontend", policy =>
                 {
-                    policy.WithOrigins("https://localhost:5173")
+                    policy.WithOrigins("https://localhost:5173", "https://sgp-productivo.vercel.app", "https://*.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials(); 
