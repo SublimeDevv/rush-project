@@ -46,11 +46,12 @@ namespace Rush.Infraestructure.Repositories.Tasks
                             LastName = te.Employee.LastName
                         }
                     }).ToList(),
-                    Activities = t.Activities.Select(a => new Activity()
+                    Activities = t.Activities.Select(a => new ActivityQw()
                     {
+                        Id = a.Id,
                         Name = a.Name,
                         Description = a.Description,
-                        Status = a.Status,
+                        Status = a.Status.ToString(),
                         Employee= new Employee()
                         {
                             Id = a.Employee.Id,
