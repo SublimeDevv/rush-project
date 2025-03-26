@@ -70,7 +70,7 @@ public class CreateProjectDTO
 
         public StatusProject? Status { get; set; } = StatusProject.ON_HOLD;
         
-        public Guid? EmployeeId { get; set; }
+        public Guid? EmployeeId { get; set; } 
         
 
     }

@@ -9,5 +9,10 @@ namespace Rush.Application.Interfaces.Tasks
     {
         public Task<ResponseHelper> GetAllTaskFromProject(Guid ProjectId);
 
+        public Task<ResponseHelper> GetTaskById(Guid id);
+
+        public Task<ResponseHelper> AssignEmployee(Guid taskId, Guid employeeId);
+
+
     }
 }

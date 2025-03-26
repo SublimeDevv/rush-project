@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Rush.Application.Interfaces.Employees;
 using Rush.Application.Interfaces.Projects;
 using Rush.Application.Services.Base;
+using Rush.Domain.Common.Util;
 using Rush.Domain.Common.ViewModels.Util;
 using Rush.Domain.DTO.Project;
 using Rush.Domain.Entities;
@@ -21,14 +22,16 @@ namespace Rush.Application.Services.Projects
         private readonly IEmployeeManagementService _managementService;
         private readonly IMapper _mapper;
         private readonly IConfigurationService _configurationService;
-
-        public ProjectService(UserManager<ApplicationUser> userManager, IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService, IConfigurationService configurationService) : base(mapper, repository, configurationService)
+        private readonly IEmployeeRepository _employeeRepository;
+        
+        public ProjectService(UserManager<ApplicationUser> userManager, IProjectRepository repository, IMapper mapper, IEmployeeService employeeService, IEmployeeManagementService managementService, IConfigurationService configurationService, IEmployeeRepository employeeRepository) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
             _managementService = managementService;
             _userManager = userManager;
             _repository = repository;
             _configurationService = configurationService;
+            _employeeRepository = employeeRepository;
         }
         
         public async Task<ResponseHelper> GetAll()
@@ -44,7 +47,20 @@ namespace Rush.Application.Services.Projects
             
             return responseHelper;
         }
-        
+
+        public async Task ChangeStatus(Guid id, int status)
+        {
+            var project = await _repository.GetSingleAsync(s => s.Id == id);
+
+            project.Status = (Enums.StatusProject) status;
+            
+            project.Employee = new List<Employee>(); 
+            project.Tasks = new List<Domain.Entities.Tasks.Task>();
+            project.ProjectResources = new List<Domain.Entities.ProjectResources.ProjectResource>();
+            
+            await _repository.UpdateAsync(project);
+        }
+
         public async Task<ResponseHelper> GetAllForEmployee(Guid employeeId)
         {
             ResponseHelper responseHelper = new ResponseHelper(); 
@@ -61,6 +77,8 @@ namespace Rush.Application.Services.Projects
         {
             List<object> employeeList = new List<object>();
 
+            projects = projects.OrderBy(c => c.Name).ToList();
+            
             foreach (var project in projects)
             {
                 var employees = new List<object>();
@@ -68,7 +86,6 @@ namespace Rush.Application.Services.Projects
 
                 foreach (var y in project.Employee)
                 {
-                    // Capturamos los datos fuera del contexto de EF Core
                     var user = await _userManager.FindByIdAsync(y.UserId.ToString());
                     var roles = await _userManager.GetRolesAsync(user);
 
@@ -98,7 +115,7 @@ namespace Rush.Application.Services.Projects
             
             if (Guid.TryParse(createProjectDto.EmployeeId.ToString(), out Guid employeeId))
             {
-                _managementService.ManageRoleAssignment(employeeId, "Supervisor");
+                await _managementService.ManageRoleAssignment(employeeId,  project.Id, "Supervisor");
             }
             
         }
@@ -148,6 +165,32 @@ namespace Rush.Application.Services.Projects
             return responseHelper;
         }
 
+        public async Task DeleteAndRelease(Guid id)
+        {
+            var project = await _repository.GetById(id);
+
+            project.IsDeleted = true;
+            
+            foreach (var employee in project.Employee)
+            {
+                var employee1 = await _employeeRepository.GetSingleAsync(s => s.Id == employee.Id);
+                
+                employee1.ProjectId = null;
+                employee1.User = null;
+                employee.Project = null;
+                await _managementService.ManageRoleAssignment(employee.Id, "Empleado");
+                
+                await _employeeRepository.UpdateAsync(employee1);   
+                
+            }
+            
+            project.Employee = new List<Employee>();
+            project.Tasks = new List<Domain.Entities.Tasks.Task>();
+            project.ProjectResources = new List<Domain.Entities.ProjectResources.ProjectResource>();
+            
+            await _repository.UpdateAsync(project);   
+        }
+
         private async Task<object> Transform(Project project)
         {
 
@@ -156,7 +199,6 @@ namespace Rush.Application.Services.Projects
 
             foreach (var y in project.Employee)
             {
-                // Capturamos los datos fuera del contexto de EF Core
                 var user = await _userManager.FindByIdAsync(y.UserId.ToString());
                 var roles = await _userManager.GetRolesAsync(user);
 
@@ -170,6 +212,7 @@ namespace Rush.Application.Services.Projects
             
             return new { Project = project, Employees = employees, Encharge = encharge,  Status = project.Status.ToString()};
         }
+        
         
     }
 }

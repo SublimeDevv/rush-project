@@ -38,6 +38,10 @@ namespace Rush.Infraestructure.Common
             
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Project>()
+                .Property(p => p.Status)
+                .HasConversion<int>(); 
+            
             var entitiesAssembly = typeof(BaseEntity).Assembly;
             modelBuilder.RegisterAllEntities<BaseEntity>(entitiesAssembly);
         }

@@ -10,10 +10,13 @@ namespace Rush.Infraestructure.Repositories.ProjectResources
     class ProjectResourceRepository: BaseRepository<ProjectResource>, IProjectResourceRepository
     {
         private readonly ApplicationDbContext _context;
+        
         public ProjectResourceRepository(ApplicationDbContext context, ClaimsPrincipal user) : base(context, user)
         {
             _context = context;
         }
+        
+        
         
     }
 }

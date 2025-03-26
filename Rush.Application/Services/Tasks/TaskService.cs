@@ -18,7 +18,7 @@ namespace Rush.Application.Services.Tasks
         private readonly ITaskRepository _repository;
         private readonly IMapper _mapper;
         private readonly IConfigurationService _configurationService;
-
+        
         public TaskService(ITaskRepository repository, IMapper mapper, IConfigurationService configurationService) : base(mapper, repository, configurationService)
         {
             _mapper = mapper;
@@ -26,6 +26,53 @@ namespace Rush.Application.Services.Tasks
             _configurationService = configurationService;
         }
 
+        public async Task<ResponseHelper> GetTaskById(Guid id)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var task = await _repository.GetTaskById(id);
+
+                if (task is null)
+                {
+                    response.Message = "No se encontraron las tareas";
+                    response.Success = false;
+                }
+
+                response.Data = task;
+                response.Success = true;
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseHelper> AssignEmployee(Guid taskId, Guid employeeId)
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var taskEmployee = await _repository.AssignEmployee(taskId, employeeId);
+
+                response.Data = taskEmployee;
+                response.Success = true;
+                response.Message = "Employee assigned to task successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+
+            return response;
+        }
+        
         public async Task<ResponseHelper> GetAllTaskFromProject(Guid ProjectId)
         {
             ResponseHelper response = new();
