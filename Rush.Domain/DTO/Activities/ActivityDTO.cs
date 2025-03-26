@@ -1,4 +1,5 @@
-﻿using static Rush.Domain.Common.Util.Enums;
+﻿using Rush.Domain.DTO.Employees;
+using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Domain.DTO.Activities
 {
@@ -9,5 +10,6 @@ namespace Rush.Domain.DTO.Activities
         public StatusActivity Status { get; set; }
         public Guid TaskId { get; set; }
         public Guid EmployeeId { get; set; }
+        
     }
 }

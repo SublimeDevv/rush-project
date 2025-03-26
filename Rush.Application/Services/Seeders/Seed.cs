@@ -50,7 +50,7 @@ namespace Rush.Application.Services.Seeders
                 users.AddRange(new[]
                 {
             new ApplicationUser { UserName = "root@admin.com", Email = "root@admin.com", IsDeleted = false },
-            new ApplicationUser { UserName = "supervisor@gmail.com", Email = "supervisor@gmail.com", IsDeleted = false },
+            new ApplicationUser { UserName = "superv    isor@gmail.com", Email = "supervisor@gmail.com", IsDeleted = false },
             new ApplicationUser { UserName = "gerente@test.com", Email = "gerente@test.com", IsDeleted = false },
             new ApplicationUser { UserName = "sistemas@test.com", Email = "sistemas@test.com", IsDeleted = false },
             new ApplicationUser { UserName = "recursoshumanos@test.com", Email = "recursoshumanos@test.com", IsDeleted = false }

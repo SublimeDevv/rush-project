@@ -17,7 +17,7 @@ namespace Rush.Domain.Entities.Activities
         public Task? Task { get; set; }
 
         [ForeignKey("EmployeeId")]
-        public Guid EmployeeId { get; set; }  /*=> En lugar de "GetBy", que sea EmployeeId, queda claro que es el que está asignado en la actividad*/
+        public Guid EmployeeId { get; set; }  /*=> En lugar de "GetBy", que sea EmployeeId, queda claro que es el que estï¿½ asignado en la actividad*/
         public Employee? Employee { get; set; }
 
         public StatusActivity Status { get; set; }

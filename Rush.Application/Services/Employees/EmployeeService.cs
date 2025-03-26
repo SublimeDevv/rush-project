@@ -62,12 +62,14 @@ namespace Rush.Application.Services.Employees
         public async Task RemoveProject(Guid employeeId, string? role)
         {
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
-
-            if (employee is not null)
+            
+            var rol = await _userManager.GetRolesAsync(_userManager.FindByIdAsync(employee.UserId.ToString()).Result);
+            
+            if (employee is not null && !rol.Contains("Supervisor"))
             {
                 employee.ProjectId = null;
             
-                await ManageRoleAssignment(employeeId, role);
+                await ManageRoleAssignment(employeeId, "Empleado");
             
                 await _repository.UpdateAsync(employee);
             }

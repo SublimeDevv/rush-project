@@ -43,7 +43,7 @@ namespace Rush.WebAPI.Controllers.Employees
         [HttpPost("RemoveProject")]
         public async Task<IActionResult> RemoveProject([FromBody] EmployeeDTOForProjectRemoval employeeDto)
         {
-            await _service.RemoveProject(employeeDto.EmployeeId, employeeDto.Role);
+            await _service.RemoveProject(employeeDto.EmployeeId, "Empleado");
 
             return Ok("Proyecto retirado");
         }
