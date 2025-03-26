@@ -15,7 +15,7 @@ using static Rush.Domain.Common.Util.Enums;
 
 namespace Rush.Infraestructure.Repositories.Employees
 {
-    class EmployeeRepository: BaseRepository<Employee>, IEmployeeRepository
+    class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
         private readonly ApplicationDbContext _context;
         public EmployeeRepository(ApplicationDbContext context, ClaimsPrincipal user) : base(context, user)
@@ -123,6 +123,62 @@ namespace Rush.Infraestructure.Repositories.Employees
             using var connection = _context.Database.GetDbConnection();
             var result = await connection.QueryAsync<EmployeeProjectDataVM>(sql, new { projectId });
             return result.ToList();
+        }
+
+        public async Task<EmployeeDataDashboardRHVM> GetRHDasboarData()
+        {
+            string sql = @"-- Seleccionar empleados activos
+                            SELECT COUNT(*) AS activeEmployees FROM Tbl_Employees as emp
+                            WHERE emp.IsDeleted = 0
+
+
+                            -- Empleados con proyecto
+                            SELECT COUNT(*) AS employeesWithoutProject FROM Tbl_Employees as emp
+                            WHERE emp.IsDeleted = 0 AND emp.ProjectId IS NOT NULL;
+
+                            -- Empleado mas solicitado
+                            SELECT TOP 1 emp.*, tasks.tasksQuantity
+                            FROM Tbl_Employees AS emp
+                            JOIN (
+                                SELECT EmployeeId, COUNT(*) AS tasksQuantity
+                                FROM Tbl_Activities
+                                WHERE IsDeleted = 0
+                                GROUP BY EmployeeId
+                            ) AS tasks ON tasks.EmployeeId = emp.Id
+                            WHERE emp.IsDeleted = 0
+                            ORDER BY tasks.tasksQuantity DESC;
+
+                            --Ultimo empleado agregado
+                            SELECT TOP 1 emp.* FROM Tbl_Employees as emp
+                            WHERE emp.IsDeleted = 0
+                            ORDER BY emp.CreatedAt DESC 
+                            ;
+
+                            -- Empleado por mes
+                            SELECT YEAR(CreatedAt) AS YEAR, MONTH(CreatedAt) AS MONTH, COUNT(*) AS dataQuantity
+                                FROM Tbl_Employees AS emp
+                                WHERE YEAR(CreatedAt) = YEAR(GETDATE())
+                                GROUP BY YEAR(CreatedAt), MONTH(CreatedAt)
+                                ORDER BY MONTH;";
+
+            using (var multi = await _context.Database.GetDbConnection().QueryMultipleAsync(sql))
+            {
+                var activeEmployees = await multi.ReadFirstOrDefaultAsync<int>();
+                var employeesWithoutProject = await multi.ReadFirstOrDefaultAsync<int>();
+                var employeeMostNeedit = await multi.ReadFirstOrDefaultAsync<EmployeeVM>();
+                var lastEmployeeAdded = await multi.ReadFirstOrDefaultAsync<EmployeeVM>();
+                var employeesByMonths = (await multi.ReadAsync<EmployeesByMonth>()).ToList();
+
+                return new EmployeeDataDashboardRHVM()
+                {
+                    ActiveEmployees = activeEmployees,
+                    EmployeesWithoutProject = employeesWithoutProject,
+                    EmployeeMostNeedit = employeeMostNeedit,
+                    LastEmployeeAdded = lastEmployeeAdded,
+                    EmployeesByMonths = employeesByMonths
+                };
+
+            }
         }
     }
 }

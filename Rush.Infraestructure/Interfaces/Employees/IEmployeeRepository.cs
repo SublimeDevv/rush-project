@@ -11,7 +11,7 @@ namespace Rush.Infraestructure.Interfaces.Employees
         public Task<EmployeeVM> GetEmployeeData(Guid userId);
         public Task<ProjectDataByEmployeeVM> GetEmployeeProject(Guid employeeId);
         public Task<List<EmployeeProjectDataVM>> GetEmployeesFromProject(Guid projectId);
-
+        public Task<EmployeeDataDashboardRHVM> GetRHDasboarData();
 
     }
 }
