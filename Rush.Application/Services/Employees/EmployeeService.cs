@@ -265,6 +265,35 @@ namespace Rush.Application.Services.Employees
 
             return response;
         }
+
+        public async Task<ResponseHelper> GetRHDasboarData()
+        {
+            ResponseHelper response = new();
+
+            try
+            {
+                var employeeRHDashboardData = await _repository.GetRHDasboarData();
+
+                if (employeeRHDashboardData == null)
+                {
+
+                    response.Message = "No se encontraron los datos";
+                    response.Success = false;
+                }
+
+                response.Data = employeeRHDashboardData;
+                response.Success = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
     }
 
 }

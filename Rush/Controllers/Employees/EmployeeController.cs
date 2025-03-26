@@ -76,6 +76,13 @@ namespace Rush.WebAPI.Controllers.Employees
             return Ok(result);
         }
 
+        [HttpGet("GetRHDasboarData")]
+        public async Task<IActionResult> GetRHDasboarData()
+        {
+            var result = await _service.GetRHDasboarData();
+            return Ok(result);
+        }
+
     }
     
     

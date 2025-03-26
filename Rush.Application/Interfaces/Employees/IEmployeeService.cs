@@ -18,6 +18,7 @@ namespace Rush.Application.Interfaces.Employees
         public Task<ResponseHelper> GetEmployeeData(Guid userId);
         public Task<ResponseHelper> GetEmployeeProject(Guid employeeId);
         public Task<ResponseHelper> GetEmployeesFromProject(Guid projectId);
+        public Task<ResponseHelper> GetRHDasboarData();
 
     }
 }
