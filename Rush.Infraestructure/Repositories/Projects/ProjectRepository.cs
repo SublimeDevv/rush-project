@@ -22,12 +22,14 @@ namespace Rush.Infraestructure.Repositories.Projects
         public async Task<List<Project>> GetAllYes()
         {
             var projects = await _context.Projects
+                .Where(p => p.IsDeleted == false)
                 .Include(p => p.Employee) 
                 .Select(p => new Project() 
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
+                    Status = p.Status,
                     StartDate = p.StartDate,
                     EndTime = p.EndTime,
                     Employee = p.Employee.Select(e => new Employee()
@@ -47,13 +49,14 @@ namespace Rush.Infraestructure.Repositories.Projects
         {
             var projects = await _context.Projects
                 .Include(p => p.Employee) // Asegurar que la relación esté cargada
-                .Where(p => p.Employee.Any(e => e.UserId == employeeId.ToString())) // Filtrar primero
+                .Where(p => p.IsDeleted == false &&  p.Employee.Any(e => e.UserId == employeeId.ToString())) // Filtrar primero
                 .Select(p => new Project() // Luego proyectar
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
                     StartDate = p.StartDate,
+                    Status = p.Status,
                     EndTime = p.EndTime,
                     Employee = p.Employee.Select(e => new Employee()
                     {
@@ -80,6 +83,7 @@ namespace Rush.Infraestructure.Repositories.Projects
                 {
                     Id = p.Id,
                     Name = p.Name,
+                    Status = p.Status,
                     Description = p.Description,
                     StartDate = p.StartDate,
                     EndTime = p.EndTime,
@@ -124,7 +128,7 @@ namespace Rush.Infraestructure.Repositories.Projects
                         UsedQuantity = pr.UsedQuantity
                     }).ToList()
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             return project;
         }
@@ -140,6 +144,7 @@ namespace Rush.Infraestructure.Repositories.Projects
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
+                    Status = p.Status,
                     StartDate = p.StartDate,
                     EndTime = p.EndTime,
                     Employee = p.Employee.Select(e => new Employee()
@@ -180,7 +185,7 @@ namespace Rush.Infraestructure.Repositories.Projects
                         Resource = pr.Resource
                     }).ToList()
                 })
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync( p => p.Id == id);
 
             return project;
         }

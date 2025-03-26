@@ -82,7 +82,10 @@ namespace Rush.Application.Services.Employees
 
         public async Task AssignProject(Guid employeeId, Guid projectId, string? role)
         {
-            //these i have two queries the firstone is for the model and the second one is to get the userId
+            if (role is null)
+            {
+                role = "Empleado";
+            }
             
             var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
             
@@ -99,7 +102,26 @@ namespace Rush.Application.Services.Employees
             await _repository.UpdateAsync(employee);
 
         }
-        public async Task<bool> ManageRoleAssignment(Guid employeeId, string? role = "Empleado")
+
+        public async Task<bool> ManageRoleAssignment(Guid employeeId , Guid projectId,  string? role) 
+        {
+            if(employeeId == Guid.Empty)
+                return false;
+            
+            var employee = await _repository.GetSingleAsync(s => s.Id == employeeId);
+
+            if (employee is not null)
+            {
+                employee.ProjectId = projectId;
+            
+                await ManageRoleAssignment(employeeId, role);
+            
+                await _repository.UpdateAsync(employee);
+            }
+            
+            return true;
+        }
+        public async Task<bool> ManageRoleAssignment(Guid employeeId, string? role) 
         {
             if(employeeId == Guid.Empty)
                 return false;

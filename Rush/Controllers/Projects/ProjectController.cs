@@ -26,13 +26,26 @@ namespace Rush.WebAPI.Controllers.Projects
             _employeeService = employeeService;
         }
 
+        [HttpPost("ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus(Guid id, int status)
+        {
+            
+            await _service.ChangeStatus(id, status);
+            
+            return Ok(new ResponseHelper()
+            {
+                Success = true,
+                Message = "Estado cambiado"
+            });
+        }
+        
         [HttpGet("GetAllStatus")]
         public async Task<IActionResult> GetStatus()
         {
             ResponseHelper responseHelper = new ResponseHelper();
 
-            string[][] roles = Enum.GetValues(typeof(Enums.Roles))
-                .Cast<Enums.Roles>()
+            string[][] roles = Enum.GetValues(typeof(Enums.StatusProject))
+                .Cast<Enums.StatusProject>()
                 .Select(r => new string[] { ((int)r).ToString(), r.ToString() })
                 .ToArray();
             
@@ -113,6 +126,18 @@ namespace Rush.WebAPI.Controllers.Projects
             {
                 Success = true,
                 Message ="Proyecto creado"
+            });
+        }
+        
+        [HttpDelete("DeleteProject/{id}")]
+        public async Task<IActionResult> DeleteProject(Guid id)
+        {
+            await _service.DeleteAndRelease(id);
+            
+            return Ok(new ResponseHelper()
+            {
+                Success = true,
+                Message ="Proyecto eliminado"
             });
         }
         
